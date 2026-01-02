@@ -21,7 +21,7 @@ class GarageState extends Equatable {
     this.maintenanceRecords = const [],
     this.errorMessage,
     this.isAuthenticated = false,
-    this.themeMode = ThemeMode.dark,
+    this.themeMode = ThemeMode.light,
     this.locale = const Locale('en'),
     this.username,
   });

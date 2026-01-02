@@ -184,7 +184,7 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
@@ -212,8 +212,6 @@ class MainLayout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(context, Icons.home_rounded, l10n.home, '/'),
-              // _buildNavItem(
-              //     context, Icons.history_rounded, l10n.history, '/history'),
               _buildNavItem(
                   context, Icons.settings_rounded, l10n.settings, '/settings'),
             ],

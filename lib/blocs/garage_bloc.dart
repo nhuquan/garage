@@ -66,7 +66,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
 
   Future<void> _onInitSettings(InitSettings event, Emitter<GarageState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    final themeStr = prefs.getString('themeMode') ?? 'dark';
+    final themeStr = prefs.getString('themeMode') ?? 'light';
     final localeStr = prefs.getString('locale') ?? 'en';
 
     emit(state.copyWith(
