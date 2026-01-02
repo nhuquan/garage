@@ -1,4 +1,18 @@
 services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: garage_db
+      DB_USER: garage_user
+      DB_PASSWORD: garage_password
+
   db:
     image: postgres:15-alpine
     environment:
@@ -9,6 +23,11 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U garage_user -d garage_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:

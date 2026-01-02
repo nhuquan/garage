@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:postgres/postgres.dart';
 
 class DbClient {
@@ -12,13 +13,19 @@ class DbClient {
       return _connection!;
     }
 
+    final host = Platform.environment['DB_HOST'] ?? 'localhost';
+    final port = int.parse(Platform.environment['DB_PORT'] ?? '5433');
+    final database = Platform.environment['DB_NAME'] ?? 'garage_db';
+    final username = Platform.environment['DB_USER'] ?? 'garage_user';
+    final password = Platform.environment['DB_PASSWORD'] ?? 'garage_password';
+
     _connection = await Connection.open(
       Endpoint(
-        host: 'localhost',
-        port: 5433,
-        database: 'garage_db',
-        username: 'garage_user',
-        password: 'garage_password',
+        host: host,
+        port: port,
+        database: database,
+        username: username,
+        password: password,
       ),
       settings: const ConnectionSettings(sslMode: SslMode.disable),
     );
