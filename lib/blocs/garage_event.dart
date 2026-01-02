@@ -11,6 +11,26 @@ abstract class GarageEvent extends Equatable {
 
 class LoadGarage extends GarageEvent {}
 
+class CheckAuth extends GarageEvent {}
+
+class LoginUser extends GarageEvent {
+  final String username;
+  final String password;
+  const LoginUser(this.username, this.password);
+  @override
+  List<Object?> get props => [username, password];
+}
+
+class RegisterUser extends GarageEvent {
+  final String username;
+  final String password;
+  const RegisterUser(this.username, this.password);
+  @override
+  List<Object?> get props => [username, password];
+}
+
+class LogoutUser extends GarageEvent {}
+
 // Vehicle Events
 class AddVehicle extends GarageEvent {
   final Vehicle vehicle;

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:hive/hive.dart';
 
 class Vehicle extends Equatable {
   final String id;
@@ -32,42 +31,26 @@ class Vehicle extends Equatable {
     );
   }
 
-  @override
-  List<Object?> get props => [id, name, type, year, currentMileage];
-}
-
-class VehicleAdapter extends TypeAdapter<Vehicle> {
-  @override
-  final int typeId = 0;
-
-  @override
-  Vehicle read(BinaryReader reader) {
-    final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{
-      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'type': type,
+      'year': year,
+      'currentMileage': currentMileage,
     };
+  }
+
+  factory Vehicle.fromJson(Map<String, dynamic> map) {
     return Vehicle(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      type: fields[2] as String,
-      year: fields[3] as int,
-      currentMileage: fields[4] as double,
+      id: map['id'] as String,
+      name: map['name'] as String,
+      type: map['type'] as String,
+      year: map['year'] as int,
+      currentMileage: (map['currentMileage'] as num).toDouble(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Vehicle obj) {
-    writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.type)
-      ..writeByte(3)
-      ..write(obj.year)
-      ..writeByte(4)
-      ..write(obj.currentMileage);
-  }
+  List<Object?> get props => [id, name, type, year, currentMileage];
 }

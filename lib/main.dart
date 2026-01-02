@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'blocs/garage_bloc.dart';
 import 'blocs/garage_event.dart';
+import 'blocs/garage_state.dart';
 import 'models/maintenance_item.dart';
 import 'models/vehicle.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/add_edit_vehicle_screen.dart';
 import 'screens/vehicle_details_screen.dart';
 import 'screens/add_edit_maintenance_screen.dart';
+import 'screens/login_screen.dart';
 import 'theme/garage_theme.dart';
-
 void main() async {
-  await Hive.initFlutter();
-  
-  Hive.registerAdapter(VehicleAdapter());
-  Hive.registerAdapter(MaintenanceItemAdapter());
-
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -27,7 +23,25 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 final _router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: '/',
+  redirect: (context, state) {
+    final garageState = context.read<GarageBloc>().state;
+    final bool loggingIn = state.matchedLocation == '/login';
+
+    if (!garageState.isAuthenticated) {
+      return loggingIn ? null : '/login';
+    }
+
+    if (loggingIn) {
+      return '/';
+    }
+
+    return null;
+  },
   routes: [
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
       builder: (context, state, child) {
@@ -44,7 +58,14 @@ final _router = GoRouter(
         ),
         GoRoute(
           path: '/settings',
-          builder: (context, state) => const Center(child: Text('Settings coming soon')),
+          builder: (context, state) {
+            return Center(
+              child: ElevatedButton(
+                onPressed: () => context.read<GarageBloc>().add(LogoutUser()),
+                child: const Text('Logout'),
+              ),
+            );
+          },
         ),
       ],
     ),
@@ -94,12 +115,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GarageBloc()..add(LoadGarage()),
-      child: MaterialApp.router(
-        title: 'Garage',
-        debugShowCheckedModeBanner: false,
-        theme: GarageTheme.darkTheme,
-        routerConfig: _router,
+      create: (context) => GarageBloc()..add(CheckAuth()),
+      child: BlocBuilder<GarageBloc, GarageState>(
+        builder: (context, state) {
+          // Force router refresh when auth state changes
+          return MaterialApp.router(
+            key: ValueKey(state.isAuthenticated),
+            title: 'Garage',
+            debugShowCheckedModeBanner: false,
+            theme: GarageTheme.darkTheme,
+            routerConfig: _router,
+          );
+        },
       ),
     );
   }
