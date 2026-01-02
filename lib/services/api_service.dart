@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiService {
-  final String baseUrl = 'http://38.60.252.191:8080';
+  final String baseUrl = 'https://garage-api.livana.dev';
   final _storage = const FlutterSecureStorage();
 
   Future<String?> get _token async => await _storage.read(key: 'token');

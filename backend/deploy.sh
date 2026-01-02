@@ -37,4 +37,4 @@ ssh $SERVER_USER@$SERVER_IP "cd ~/$REMOTE_DIR && \
     (docker image prune -f)"
 
 echo "✅ Deployment complete!"
-echo "Your backend should be running at http://$SERVER_IP:8080"
+echo "Your backend should be running at https://garage-api.livana.dev"
