@@ -24,7 +24,7 @@ Future<Response> _getMaintenanceItems(RequestContext context, Connection conn, S
   if (vehicleId == null) {
      final result = await conn.execute(
       '''
-      SELECT m.id, m.vehicle_id, m.title, m.date, m.cost, m.mileage_at_service, m.notes 
+      SELECT m.id, m.vehicle_id, m.title, m.type, m.date, m.cost, m.mileage_at_service, m.notes 
       FROM maintenance_items m
       JOIN vehicles v ON m.vehicle_id = v.id
       WHERE v.user_id = \u00241
@@ -44,7 +44,7 @@ Future<Response> _getMaintenanceItems(RequestContext context, Connection conn, S
 
     final result = await conn.execute(
       '''
-      SELECT id, vehicle_id, title, date, cost, mileage_at_service, notes 
+      SELECT id, vehicle_id, title, type, date, cost, mileage_at_service, notes 
       FROM maintenance_items 
       WHERE vehicle_id = \u00241
       ORDER BY date DESC
@@ -62,6 +62,7 @@ Response _mapToResponse(Result result) {
       'id': columns['id'],
       'vehicleId': columns['vehicle_id'],
       'title': columns['title'],
+      'type': columns['type'],
       'date': (columns['date'] as DateTime).toIso8601String(),
       'cost': columns['cost'],
       'mileageAtService': columns['mileage_at_service'],
@@ -77,6 +78,7 @@ Future<Response> _createMaintenanceItem(RequestContext context, Connection conn,
   final id = body['id'] as String;
   final vehicleId = body['vehicleId'] as String;
   final title = body['title'] as String;
+  final type = body['type'] as String? ?? 'other';
   final date = DateTime.parse(body['date'] as String);
   final cost = (body['cost'] as num).toDouble();
   final mileageAtService = (body['mileageAtService'] as num).toDouble();
@@ -92,10 +94,10 @@ Future<Response> _createMaintenanceItem(RequestContext context, Connection conn,
 
   await conn.execute(
     '''
-    INSERT INTO maintenance_items (id, vehicle_id, title, date, cost, mileage_at_service, notes)
-    VALUES (\u00241, \u00242, \u00243, \u00244, \u00245, \u00246, \u00247)
+    INSERT INTO maintenance_items (id, vehicle_id, title, type, date, cost, mileage_at_service, notes)
+    VALUES (\u00241, \u00242, \u00243, \u00244, \u00245, \u00246, \u00247, \u00248)
     ''',
-    parameters: [id, vehicleId, title, date, cost, mileageAtService, notes],
+    parameters: [id, vehicleId, title, type, date, cost, mileageAtService, notes],
   );
 
   await conn.execute(

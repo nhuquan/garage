@@ -60,11 +60,16 @@ class DbClient {
         id UUID PRIMARY KEY,
         vehicle_id UUID NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
         title TEXT NOT NULL,
+        type TEXT NOT NULL DEFAULT 'other',
         date TIMESTAMP NOT NULL,
         cost DOUBLE PRECISION NOT NULL,
         mileage_at_service DOUBLE PRECISION NOT NULL,
         notes TEXT
       );
+    ''');
+
+    await conn.execute('''
+      ALTER TABLE maintenance_items ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT 'other';
     ''');
   }
 }

@@ -40,5 +40,12 @@
   "notes": "Notes",
   "optional": "(Optional)",
   "noVehicles": "No vehicles found. Add one!",
-  "noMaintenance": "No maintenance records found."
+  "noMaintenance": "No maintenance records found.",
+  "serviceType": "Service Type",
+  "oil": "Oil Change",
+  "brake": "Brake Service",
+  "coolant": "Coolant Flush",
+  "tire": "Tire Rotation/Change",
+  "filter": "Filter Replacement",
+  "other": "Other"
 }

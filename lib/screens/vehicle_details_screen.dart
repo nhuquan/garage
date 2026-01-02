@@ -104,7 +104,7 @@ class VehicleDetailsScreen extends StatelessWidget {
                                       color: Colors.blueAccent.withOpacity(0.1),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: const Icon(Icons.build_circle_rounded, color: Colors.blueAccent),
+                                    child: Icon(record.type.icon, color: Colors.blueAccent),
                                   ),
                                   title: Text(
                                     record.title,

@@ -167,7 +167,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
 
   Widget _buildFieldWrapper({required Widget child}) {
     return GlassWidget(
-      opacity: 0.05,
+      opacity: 0.08,
       borderRadius: 16,
       child: child,
     );
@@ -176,10 +176,30 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
   InputDecoration _buildInputDecoration(String label, IconData icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
+      labelStyle: TextStyle(
+        color: isDark ? Colors.white : Colors.black87,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      floatingLabelStyle: TextStyle(
+        color: Colors.blueAccent[100],
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      hintText: label,
+      hintStyle: TextStyle(
+        color: isDark ? Colors.white38 : Colors.black38,
+        fontSize: 14,
+      ),
       prefixIcon: Icon(icon, color: Colors.blueAccent),
-      border: InputBorder.none,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide.none,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      filled: true,
+      fillColor: Colors.transparent,
     );
   }
 }

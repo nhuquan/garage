@@ -301,6 +301,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No maintenance records found.'**
   String get noMaintenance;
+
+  /// No description provided for @serviceType.
+  ///
+  /// In en, this message translates to:
+  /// **'Service Type'**
+  String get serviceType;
+
+  /// No description provided for @oil.
+  ///
+  /// In en, this message translates to:
+  /// **'Oil Change'**
+  String get oil;
+
+  /// No description provided for @brake.
+  ///
+  /// In en, this message translates to:
+  /// **'Brake Service'**
+  String get brake;
+
+  /// No description provided for @coolant.
+  ///
+  /// In en, this message translates to:
+  /// **'Coolant Flush'**
+  String get coolant;
+
+  /// No description provided for @tire.
+  ///
+  /// In en, this message translates to:
+  /// **'Tire Rotation/Change'**
+  String get tire;
+
+  /// No description provided for @filter.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter Replacement'**
+  String get filter;
+
+  /// No description provided for @other.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get other;
 }
 
 class _AppLocalizationsDelegate

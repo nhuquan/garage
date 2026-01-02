@@ -33,5 +33,12 @@
   "notes": "Ghi chú",
   "optional": "(Tùy chọn)",
   "noVehicles": "Không tìm thấy xe nào. Hãy thêm mới!",
-  "noMaintenance": "Không có bản ghi bảo trì nào."
+  "noMaintenance": "Không có bản ghi bảo trì nào.",
+  "serviceType": "Loại dịch vụ",
+  "oil": "Thay nhớt",
+  "brake": "Bảo trì phanh",
+  "coolant": "Súc két nước",
+  "tire": "Thay/Đảo lốp",
+  "filter": "Thay lọc gió/nhớt",
+  "other": "Khác"
 }

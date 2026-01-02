@@ -111,4 +111,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMaintenance => 'No maintenance records found.';
+
+  @override
+  String get serviceType => 'Service Type';
+
+  @override
+  String get oil => 'Oil Change';
+
+  @override
+  String get brake => 'Brake Service';
+
+  @override
+  String get coolant => 'Coolant Flush';
+
+  @override
+  String get tire => 'Tire Rotation/Change';
+
+  @override
+  String get filter => 'Filter Replacement';
+
+  @override
+  String get other => 'Other';
 }

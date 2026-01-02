@@ -111,4 +111,25 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get noMaintenance => 'Không có bản ghi bảo trì nào.';
+
+  @override
+  String get serviceType => 'Loại dịch vụ';
+
+  @override
+  String get oil => 'Thay nhớt';
+
+  @override
+  String get brake => 'Bảo trì phanh';
+
+  @override
+  String get coolant => 'Súc két nước';
+
+  @override
+  String get tire => 'Thay/Đảo lốp';
+
+  @override
+  String get filter => 'Thay lọc gió/nhớt';
+
+  @override
+  String get other => 'Khác';
 }

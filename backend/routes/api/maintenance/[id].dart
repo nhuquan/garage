@@ -21,6 +21,7 @@ Future<Response> onRequest(RequestContext context, String id) async {
 Future<Response> _updateMaintenanceItem(RequestContext context, Connection conn, String userId, String id) async {
   final body = await context.request.json() as Map<String, dynamic>;
   final title = body['title'] as String;
+  final type = body['type'] as String? ?? 'other';
   final date = DateTime.parse(body['date'] as String);
   final cost = (body['cost'] as num).toDouble();
   final mileageAtService = (body['mileageAtService'] as num).toDouble();
@@ -43,10 +44,10 @@ Future<Response> _updateMaintenanceItem(RequestContext context, Connection conn,
   await conn.execute(
     '''
     UPDATE maintenance_items 
-    SET title = \$1, date = \$2, cost = \$3, mileage_at_service = \$4, notes = \$5
-    WHERE id = \$6
+    SET title = \$1, type = \$2, date = \$3, cost = \$4, mileage_at_service = \$5, notes = \$6
+    WHERE id = \$7
     ''',
-    parameters: [title, date, cost, mileageAtService, notes, id],
+    parameters: [title, type, date, cost, mileageAtService, notes, id],
   );
 
   return Response(statusCode: HttpStatus.noContent);
