@@ -1,0 +1,18 @@
+# Ignore Dart/Flutter build artifacts
+.dart_tool/
+build/
+.packages
+pubspec.lock
+
+# Ignore macOS metadata files
+.DS_Store
+._*
+
+# Ignore Git
+.git/
+.gitignore
+
+# Ignore deployment scripts
+deploy.sh
+Dockerfile
+docker-compose.yml
