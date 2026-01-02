@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,23 @@ import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme/garage_theme.dart';
 
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (dynamic _) => notifyListeners(),
+        );
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -26,97 +44,118 @@ void main() async {
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-final _router = GoRouter(
-  navigatorKey: _rootNavigatorKey,
-  initialLocation: '/',
-  redirect: (context, state) {
-    final garageState = context.read<GarageBloc>().state;
-    final bool loggingIn = state.matchedLocation == '/login';
-
-    if (!garageState.isAuthenticated) {
-      return loggingIn ? null : '/login';
-    }
-
-    if (loggingIn) {
-      return '/';
-    }
-
-    return null;
-  },
-  routes: [
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) {
-        return MainLayout(child: child);
-      },
-      routes: [
-        GoRoute(
-          path: '/',
-          builder: (context, state) => const DashboardScreen(),
-        ),
-        GoRoute(
-          path: '/history',
-          builder: (context, state) => const Center(child: Text('All History coming soon')),
-        ),
-        GoRoute(
-          path: '/settings',
-          builder: (context, state) => const SettingsScreen(),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/add_vehicle',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) => const AddEditVehicleScreen(),
-    ),
-    GoRoute(
-      path: '/edit_vehicle',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final vehicle = state.extra as Vehicle;
-        return AddEditVehicleScreen(vehicle: vehicle);
-      },
-    ),
-    GoRoute(
-      path: '/vehicle_details/:id',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final id = state.pathParameters['id']!;
-        return VehicleDetailsScreen(vehicleId: id);
-      },
-    ),
-    GoRoute(
-      path: '/add_maintenance/:vehicleId',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final vehicleId = state.pathParameters['vehicleId']!;
-        return AddEditMaintenanceScreen(vehicleId: vehicleId);
-      },
-    ),
-    GoRoute(
-      path: '/edit_maintenance',
-      parentNavigatorKey: _rootNavigatorKey,
-      builder: (context, state) {
-        final item = state.extra as MaintenanceItem;
-        return AddEditMaintenanceScreen(vehicleId: item.vehicleId, item: item);
-      },
-    ),
-  ],
-);
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late final GarageBloc _garageBloc;
+  late final GoRouter _router;
+
+  @override
+  void initState() {
+    super.initState();
+    _garageBloc = GarageBloc()
+      ..add(InitSettings())
+      ..add(CheckAuth());
+
+    _router = GoRouter(
+      navigatorKey: _rootNavigatorKey,
+      initialLocation: '/',
+      refreshListenable: GoRouterRefreshStream(_garageBloc.stream),
+      redirect: (context, state) {
+        final garageState = _garageBloc.state;
+        final bool loggingIn = state.matchedLocation == '/login';
+
+        if (!garageState.isAuthenticated) {
+          return loggingIn ? null : '/login';
+        }
+
+        if (loggingIn) {
+          return '/';
+        }
+
+        return null;
+      },
+      routes: [
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginScreen(),
+        ),
+        ShellRoute(
+          navigatorKey: _shellNavigatorKey,
+          builder: (context, state, child) {
+            return MainLayout(child: child);
+          },
+          routes: [
+            GoRoute(
+              path: '/',
+              builder: (context, state) => const DashboardScreen(),
+            ),
+            GoRoute(
+              path: '/history',
+              builder: (context, state) => const Center(child: Text('All History coming soon')),
+            ),
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsScreen(),
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/add_vehicle',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) => const AddEditVehicleScreen(),
+        ),
+        GoRoute(
+          path: '/edit_vehicle',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final vehicle = state.extra as Vehicle;
+            return AddEditVehicleScreen(vehicle: vehicle);
+          },
+        ),
+        GoRoute(
+          path: '/vehicle_details/:id',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final id = state.pathParameters['id']!;
+            return VehicleDetailsScreen(vehicleId: id);
+          },
+        ),
+        GoRoute(
+          path: '/add_maintenance/:vehicleId',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final vehicleId = state.pathParameters['vehicleId']!;
+            return AddEditMaintenanceScreen(vehicleId: vehicleId);
+          },
+        ),
+        GoRoute(
+          path: '/edit_maintenance',
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) {
+            final item = state.extra as MaintenanceItem;
+            return AddEditMaintenanceScreen(vehicleId: item.vehicleId, item: item);
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _garageBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GarageBloc()
-        ..add(InitSettings())
-        ..add(CheckAuth()),
+    return BlocProvider.value(
+      value: _garageBloc,
       child: BlocBuilder<GarageBloc, GarageState>(
         builder: (context, state) {
           return MaterialApp.router(
