@@ -18,6 +18,7 @@ import 'screens/add_edit_maintenance_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme/garage_theme.dart';
+import 'widgets/garage_background.dart';
 
 class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
@@ -87,18 +88,17 @@ class _MyAppState extends State<MyApp> {
         ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
-          builder: (context, state, child) {
-            return MainLayout(child: child);
-          },
+          builder: (context, state, child) => MainLayout(child: child),
           routes: [
             GoRoute(
               path: '/',
               builder: (context, state) => const DashboardScreen(),
             ),
-            GoRoute(
-              path: '/history',
-              builder: (context, state) => const Center(child: Text('All History coming soon')),
-            ),
+            // GoRoute(
+            //   path: '/history',
+            //   builder: (context, state) =>
+            //       const Center(child: Text('All History coming soon')),
+            // ),
             GoRoute(
               path: '/settings',
               builder: (context, state) => const SettingsScreen(),
@@ -139,7 +139,8 @@ class _MyAppState extends State<MyApp> {
           parentNavigatorKey: _rootNavigatorKey,
           builder: (context, state) {
             final item = state.extra as MaintenanceItem;
-            return AddEditMaintenanceScreen(vehicleId: item.vehicleId, item: item);
+            return AddEditMaintenanceScreen(
+                vehicleId: item.vehicleId, item: item);
           },
         ),
       ],
@@ -168,6 +169,7 @@ class _MyAppState extends State<MyApp> {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: _router,
+            builder: (context, child) => GarageBackground(child: child!),
           );
         },
       ),
@@ -186,40 +188,21 @@ class MainLayout extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark
-              ? const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF0F0F0F),
-                    Color(0xFF1A1A2E),
-                    Color(0xFF16213E),
-                  ],
-                )
-              : const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFF5F7FA),
-                    Color(0xFFE4E9F2),
-                  ],
-                ),
-        ),
-        child: SafeArea(child: child),
-      ),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(child: child),
       bottomNavigationBar: Container(
         margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
         decoration: BoxDecoration(
-          color: isDark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.8),
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : Colors.white.withOpacity(0.8),
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             if (!isDark)
-              BoxShadow(
+              const BoxShadow(
                 color: Colors.black12,
                 blurRadius: 10,
-                offset: const Offset(0, 5),
+                offset: Offset(0, 5),
               ),
           ],
         ),
@@ -229,8 +212,10 @@ class MainLayout extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(context, Icons.home_rounded, l10n.home, '/'),
-              _buildNavItem(context, Icons.history_rounded, l10n.history, '/history'),
-              _buildNavItem(context, Icons.settings_rounded, l10n.settings, '/settings'),
+              // _buildNavItem(
+              //     context, Icons.history_rounded, l10n.history, '/history'),
+              _buildNavItem(
+                  context, Icons.settings_rounded, l10n.settings, '/settings'),
             ],
           ),
         ),
@@ -238,11 +223,14 @@ class MainLayout extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, String path) {
+  Widget _buildNavItem(
+      BuildContext context, IconData icon, String label, String path) {
     final location = GoRouterState.of(context).uri.toString();
     final isSelected = location == path;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final color = isSelected ? Colors.blueAccent : (isDark ? Colors.white54 : Colors.grey[600]);
+    final color = isSelected
+        ? Colors.blueAccent
+        : (isDark ? Colors.white54 : Colors.grey[600]);
 
     return InkWell(
       onTap: () => context.go(path),
