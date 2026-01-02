@@ -1,71 +1,62 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 
 class GarageTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blueAccent,
-        brightness: Brightness.dark,
-        surface: const Color(0xFF1A1A1A),
-      ),
+      colorSchemeSeed: Colors.blueAccent,
       scaffoldBackgroundColor: const Color(0xFF0F0F0F),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+      cardTheme: CardThemeData(
+        color: Colors.white.withOpacity(0.05),
         elevation: 0,
-        centerTitle: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.05),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.blueAccent, width: 1),
+        ),
       ),
     );
   }
 
-  static BoxDecoration glassDecoration({
-    double opacity = 0.1,
-    double blur = 15.0,
-    double borderRadius = 20.0,
-  }) {
-    return BoxDecoration(
-      color: Colors.white.withOpacity(opacity),
-      borderRadius: BorderRadius.circular(borderRadius),
-      border: Border.all(
-        color: Colors.white.withOpacity(0.2),
-        width: 1.5,
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorSchemeSeed: Colors.blueAccent,
+      scaffoldBackgroundColor: const Color(0xFFF5F7FA),
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 2,
+        shadowColor: Colors.black12,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
-    );
-  }
-}
-
-class GlassWidget extends StatelessWidget {
-  final Widget child;
-  final double opacity;
-  final double blur;
-  final double borderRadius;
-  final EdgeInsetsGeometry? padding;
-
-  const GlassWidget({
-    super.key,
-    required this.child,
-    this.opacity = 0.05,
-    this.blur = 20.0,
-    this.borderRadius = 24.0,
-    this.padding,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          padding: padding,
-          decoration: GarageTheme.glassDecoration(
-            opacity: opacity,
-            blur: blur,
-            borderRadius: borderRadius,
-          ),
-          child: child,
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Colors.grey[200],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: const BorderSide(color: Colors.blueAccent, width: 1),
         ),
       ),
     );

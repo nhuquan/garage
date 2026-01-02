@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
 import '../models/maintenance_item.dart';
 
@@ -30,6 +31,22 @@ class RegisterUser extends GarageEvent {
 }
 
 class LogoutUser extends GarageEvent {}
+
+class ChangeTheme extends GarageEvent {
+  final ThemeMode themeMode;
+  const ChangeTheme(this.themeMode);
+  @override
+  List<Object?> get props => [themeMode];
+}
+
+class ChangeLocale extends GarageEvent {
+  final Locale locale;
+  const ChangeLocale(this.locale);
+  @override
+  List<Object?> get props => [locale];
+}
+
+class InitSettings extends GarageEvent {}
 
 // Vehicle Events
 class AddVehicle extends GarageEvent {

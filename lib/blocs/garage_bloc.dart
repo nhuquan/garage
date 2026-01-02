@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/vehicle.dart';
 import '../models/maintenance_item.dart';
 import '../services/api_service.dart';
@@ -20,12 +22,16 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     on<AddMaintenanceRecord>(_onAddMaintenanceRecord);
     on<UpdateMaintenanceRecord>(_onUpdateMaintenanceRecord);
     on<DeleteMaintenanceRecord>(_onDeleteMaintenanceRecord);
+    on<ChangeTheme>(_onChangeTheme);
+    on<ChangeLocale>(_onChangeLocale);
+    on<InitSettings>(_onInitSettings);
   }
 
   Future<void> _onCheckAuth(CheckAuth event, Emitter<GarageState> emit) async {
     final isLoggedIn = await _apiService.isLoggedIn();
     if (isLoggedIn) {
-      emit(state.copyWith(isAuthenticated: true, status: GarageStatus.success));
+      final username = await _apiService.username;
+      emit(state.copyWith(isAuthenticated: true, status: GarageStatus.success, username: username));
       add(LoadGarage());
     } else {
       emit(state.copyWith(isAuthenticated: false, status: GarageStatus.unauthenticated));
@@ -36,7 +42,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     emit(state.copyWith(status: GarageStatus.authenticating));
     try {
       await _apiService.login(event.username, event.password);
-      emit(state.copyWith(isAuthenticated: true, status: GarageStatus.success));
+      emit(state.copyWith(isAuthenticated: true, status: GarageStatus.success, username: event.username));
       add(LoadGarage());
     } catch (e) {
       emit(state.copyWith(status: GarageStatus.failure, errorMessage: e.toString()));
@@ -47,9 +53,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     emit(state.copyWith(status: GarageStatus.authenticating));
     try {
       await _apiService.register(event.username, event.password);
-      // Automatically login after register or just let them login manually
-      // For simplicity, let's just emit success and let them login or show a message
-       emit(state.copyWith(status: GarageStatus.unauthenticated, errorMessage: 'Registered successfully! Please login.'));
+      emit(state.copyWith(status: GarageStatus.unauthenticated, errorMessage: 'Registered successfully! Please login.'));
     } catch (e) {
       emit(state.copyWith(status: GarageStatus.failure, errorMessage: e.toString()));
     }
@@ -60,15 +64,35 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     emit(const GarageState(status: GarageStatus.unauthenticated, isAuthenticated: false));
   }
 
+  Future<void> _onInitSettings(InitSettings event, Emitter<GarageState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeStr = prefs.getString('themeMode') ?? 'dark';
+    final localeStr = prefs.getString('locale') ?? 'en';
+
+    emit(state.copyWith(
+      themeMode: themeStr == 'dark' ? ThemeMode.dark : ThemeMode.light,
+      locale: Locale(localeStr),
+    ));
+  }
+
+  Future<void> _onChangeTheme(ChangeTheme event, Emitter<GarageState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('themeMode', event.themeMode == ThemeMode.dark ? 'dark' : 'light');
+    emit(state.copyWith(themeMode: event.themeMode));
+  }
+
+  Future<void> _onChangeLocale(ChangeLocale event, Emitter<GarageState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locale', event.locale.languageCode);
+    emit(state.copyWith(locale: event.locale));
+  }
+
   Future<void> _onLoadGarage(LoadGarage event, Emitter<GarageState> emit) async {
     emit(state.copyWith(status: GarageStatus.loading));
     try {
       final vehiclesJson = await _apiService.getVehicles();
       final vehicles = vehiclesJson.map((v) => Vehicle.fromJson(v)).toList();
       
-      // Load all maintenance records could be heavy, but let's do it for now or load on demand
-      // For simplicity in the Bloc, let's load them when needed or just get all
-      // Let's assume we want to load them into the state
       final List<MaintenanceItem> allRecords = [];
       for (var v in vehicles) {
         final recordsJson = await _apiService.getMaintenanceRecords(v.id);

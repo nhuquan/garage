@@ -57,7 +57,7 @@ class MaintenanceItem extends Equatable {
       vehicleId: map['vehicleId'] as String,
       title: map['title'] as String,
       date: DateTime.parse(map['date'] as String),
-      cost: (map['cost'] as num).toDouble(),
+      cost: (map['cost'] as num?)?.toDouble() ?? 0.0,
       mileageAtService: (map['mileageAtService'] as num).toDouble(),
       notes: map['notes'] as String? ?? '',
     );

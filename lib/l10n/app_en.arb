@@ -1,0 +1,44 @@
+{
+  "@@locale": "en",
+  "appearance": "Appearance",
+  "appTitle": "Garage",
+  "home": "Home",
+  "history": "History",
+  "settings": "Settings",
+  "logout": "Logout",
+  "greeting": "Hello, {username}",
+  "@greeting": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
+  "login": "Login",
+  "register": "Register",
+  "username": "Username",
+  "password": "Password",
+  "darkTheme": "Dark Theme",
+  "language": "Language",
+  "vietnamese": "Vietnamese",
+  "english": "English",
+  "addVehicle": "Add Vehicle",
+  "editVehicle": "Edit Vehicle",
+  "vehicleName": "Vehicle Name",
+  "vehicleType": "Vehicle Type",
+  "year": "Year",
+  "currentMileage": "Current Mileage",
+  "save": "Save",
+  "delete": "Delete",
+  "maintenanceHistory": "Maintenance History",
+  "addRecord": "Add Record",
+  "editRecord": "Edit Record",
+  "title": "Title",
+  "date": "Date",
+  "cost": "Cost",
+  "mileageAtService": "Mileage at Service",
+  "notes": "Notes",
+  "optional": "(Optional)",
+  "noVehicles": "No vehicles found. Add one!",
+  "noMaintenance": "No maintenance records found."
+}

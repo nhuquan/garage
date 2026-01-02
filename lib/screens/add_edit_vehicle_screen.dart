@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/build_context_ext.dart';
 import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../models/vehicle.dart';
-import '../theme/garage_theme.dart';
+import '../widgets/glass_widget.dart';
 
 class AddEditVehicleScreen extends StatefulWidget {
   final Vehicle? vehicle;
@@ -79,95 +80,85 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(widget.vehicle == null ? 'New Vehicle' : 'Edit Vehicle'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(widget.vehicle == null ? l10n.addVehicle : l10n.editVehicle),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F0F0F), Color(0xFF1E1E2F)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                _buildFieldWrapper(
-                  child: TextFormField(
-                    controller: _nameController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _buildInputDecoration('Vehicle Name', Icons.badge_rounded),
-                    validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                  ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildFieldWrapper(
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: _buildInputDecoration(l10n.vehicleName, Icons.badge_rounded, isDark),
+                  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
-                const SizedBox(height: 20),
-                _buildFieldWrapper(
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedType,
-                    dropdownColor: const Color(0xFF1A1A2E),
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _buildInputDecoration('Category', Icons.category_rounded),
-                    items: _categories
-                        .map((type) => DropdownMenuItem(value: type, child: Text(type)))
-                        .toList(),
-                    onChanged: (value) => setState(() => _selectedType = value!),
-                  ),
+              ),
+              const SizedBox(height: 20),
+              _buildFieldWrapper(
+                child: DropdownButtonFormField<String>(
+                  value: _selectedType,
+                  dropdownColor: isDark ? const Color(0xFF1A1A2E) : Colors.white,
+                  items: _categories
+                      .map((type) => DropdownMenuItem(value: type, child: Text(type)))
+                      .toList(),
+                  onChanged: (value) => setState(() => _selectedType = value!),
+                  decoration: _buildInputDecoration(l10n.vehicleType, Icons.category_rounded, isDark),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildFieldWrapper(
-                        child: TextFormField(
-                          controller: _yearController,
-                          style: const TextStyle(color: Colors.white),
-                          keyboardType: TextInputType.number,
-                          decoration: _buildInputDecoration('Year', Icons.calendar_today_rounded),
-                          validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                        ),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildFieldWrapper(
+                      child: TextFormField(
+                        controller: _yearController,
+                        keyboardType: TextInputType.number,
+                        decoration: _buildInputDecoration(l10n.year, Icons.calendar_today_rounded, isDark),
+                        validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: _buildFieldWrapper(
-                        child: TextFormField(
-                          controller: _mileageController,
-                          style: const TextStyle(color: Colors.white),
-                          keyboardType: TextInputType.number,
-                          decoration: _buildInputDecoration('Mileage', Icons.speed_rounded),
-                          validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                        ),
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: _buildFieldWrapper(
+                      child: TextFormField(
+                        controller: _mileageController,
+                        keyboardType: TextInputType.number,
+                        decoration: _buildInputDecoration(l10n.currentMileage, Icons.speed_rounded, isDark),
+                        validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _saveVehicle,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      elevation: 8,
-                      shadowColor: Colors.blueAccent.withOpacity(0.5),
-                    ),
-                    child: Text(
-                      widget.vehicle == null ? 'Add to Garage' : 'Save Changes',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saveVehicle,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: Text(
+                    l10n.save,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -176,16 +167,16 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
 
   Widget _buildFieldWrapper({required Widget child}) {
     return GlassWidget(
-      opacity: 0.1,
+      opacity: 0.05,
       borderRadius: 16,
       child: child,
     );
   }
 
-  InputDecoration _buildInputDecoration(String label, IconData icon) {
+  InputDecoration _buildInputDecoration(String label, IconData icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: Colors.white54),
+      labelStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
       prefixIcon: Icon(icon, color: Colors.blueAccent),
       border: InputBorder.none,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

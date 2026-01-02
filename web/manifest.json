@@ -1,6 +1,6 @@
 {
-    "name": "spinning_orbit",
-    "short_name": "spinning_orbit",
+    "name": "Garage",
+    "short_name": "Garage",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#1A1A2E",

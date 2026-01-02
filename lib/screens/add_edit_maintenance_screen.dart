@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/build_context_ext.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../models/maintenance_item.dart';
-import '../theme/garage_theme.dart';
+import '../widgets/glass_widget.dart';
 
 class AddEditMaintenanceScreen extends StatefulWidget {
   final String vehicleId;
@@ -30,7 +31,9 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.item?.title ?? '');
-    _costController = TextEditingController(text: widget.item?.cost.toString() ?? '');
+    _costController = TextEditingController(
+      text: widget.item != null && widget.item!.cost > 0 ? widget.item!.cost.toString() : '',
+    );
     _mileageController = TextEditingController(text: widget.item?.mileageAtService.toString() ?? '');
     _notesController = TextEditingController(text: widget.item?.notes ?? '');
     _selectedDate = widget.item?.date ?? DateTime.now();
@@ -51,20 +54,6 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: const ColorScheme.dark(
-              primary: Colors.blueAccent,
-              onPrimary: Colors.white,
-              surface: Color(0xFF1A1A2E),
-              onSurface: Colors.white,
-            ),
-            dialogBackgroundColor: const Color(0xFF0F0F0F),
-          ),
-          child: child!,
-        );
-      },
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
@@ -74,7 +63,7 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
   void _saveItem() {
     if (_formKey.currentState!.validate()) {
       final title = _titleController.text;
-      final cost = double.parse(_costController.text);
+      final cost = double.tryParse(_costController.text) ?? 0.0;
       final mileage = double.parse(_mileageController.text);
       final notes = _notesController.text;
 
@@ -99,108 +88,119 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final currencySymbol = NumberFormat.simpleCurrency(locale: l10n?.localeName).currencySymbol;
+
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(widget.item == null ? 'Add Service' : 'Edit Service'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(widget.item == null ? l10n.addRecord : l10n.editRecord),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFF0F0F0F), Color(0xFF1E1E2F)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                _buildFieldWrapper(
-                  child: TextFormField(
-                    controller: _titleController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: _buildInputDecoration('Service Title (e.g. Oil Change)', Icons.build_rounded),
-                    validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildFieldWrapper(
+                child: TextFormField(
+                  controller: _titleController,
+                  decoration: _buildInputDecoration(
+                    l10n.title,
+                    Icons.build_rounded,
+                    isDark,
+                  ),
+                  validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: _pickDate,
+                child: _buildFieldWrapper(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.event_rounded, color: Colors.blueAccent),
+                      const SizedBox(width: 12),
+                      Text(
+                        DateFormat.yMMMMd(l10n.localeName).format(_selectedDate),
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      const Spacer(),
+                      Text(
+                        l10n.localeName == 'vi' ? 'Thay đổi' : 'Change',
+                        style: const TextStyle(color: Colors.blueAccent),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: _pickDate,
-                  child: _buildFieldWrapper(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.event_rounded, color: Colors.blueAccent),
-                        const SizedBox(width: 12),
-                        Text(
-                          DateFormat.yMMMMd().format(_selectedDate),
-                          style: const TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                        const Spacer(),
-                        const Text('Change', style: TextStyle(color: Colors.blueAccent)),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildFieldWrapper(
-                        child: TextFormField(
-                          controller: _costController,
-                          style: const TextStyle(color: Colors.white),
-                          keyboardType: TextInputType.number,
-                          decoration: _buildInputDecoration('Cost (\$)', Icons.attach_money_rounded),
-                          validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildFieldWrapper(
+                      child: TextFormField(
+                        controller: _costController,
+                        keyboardType: TextInputType.number,
+                        decoration: _buildInputDecoration(
+                          '${l10n.cost} ($currencySymbol) ${l10n.optional}',
+                          Icons.payments_rounded,
+                          isDark,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    Expanded(
-                      child: _buildFieldWrapper(
-                        child: TextFormField(
-                          controller: _mileageController,
-                          style: const TextStyle(color: Colors.white),
-                          keyboardType: TextInputType.number,
-                          decoration: _buildInputDecoration('Mileage', Icons.speed_rounded),
-                          validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: _buildFieldWrapper(
+                      child: TextFormField(
+                        controller: _mileageController,
+                        keyboardType: TextInputType.number,
+                        decoration: _buildInputDecoration(
+                          l10n.mileageAtService,
+                          Icons.speed_rounded,
+                          isDark,
                         ),
+                        validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                _buildFieldWrapper(
-                  child: TextFormField(
-                    controller: _notesController,
-                    style: const TextStyle(color: Colors.white),
-                    maxLines: 4,
-                    decoration: _buildInputDecoration('Notes', Icons.notes_rounded),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _buildFieldWrapper(
+                child: TextFormField(
+                  controller: _notesController,
+                  maxLines: 4,
+                  decoration: _buildInputDecoration(
+                    l10n.notes,
+                    Icons.notes_rounded,
+                    isDark,
                   ),
                 ),
-                const SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _saveItem,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
-                    child: Text(
-                      widget.item == null ? 'Save Record' : 'Update Record',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saveItem,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  child: Text(
+                    l10n.save,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -209,17 +209,17 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
 
   Widget _buildFieldWrapper({required Widget child, EdgeInsetsGeometry? padding}) {
     return GlassWidget(
-      opacity: 0.1,
+      opacity: 0.05,
       borderRadius: 16,
       padding: padding,
       child: child,
     );
   }
 
-  InputDecoration _buildInputDecoration(String label, IconData icon) {
+  InputDecoration _buildInputDecoration(String label, IconData icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(color: Colors.white54),
+      labelStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
       prefixIcon: Icon(icon, color: Colors.blueAccent),
       border: InputBorder.none,
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),

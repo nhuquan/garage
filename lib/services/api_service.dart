@@ -7,6 +7,7 @@ class ApiService {
   final _storage = const FlutterSecureStorage();
 
   Future<String?> get _token async => await _storage.read(key: 'token');
+  Future<String?> get username async => await _storage.read(key: 'username');
 
   Future<Map<String, String>> _headers() async {
     final token = await _token;
@@ -28,6 +29,7 @@ class ApiService {
       final data = jsonDecode(response.body);
       await _storage.write(key: 'token', value: data['token']);
       await _storage.write(key: 'userId', value: data['userId']);
+      await _storage.write(key: 'username', value: username);
       return data;
     } else {
       throw Exception(jsonDecode(response.body)['error'] ?? 'Failed to login');
@@ -49,6 +51,7 @@ class ApiService {
   Future<void> logout() async {
     await _storage.delete(key: 'token');
     await _storage.delete(key: 'userId');
+    await _storage.delete(key: 'username');
   }
 
   Future<bool> isLoggedIn() async {

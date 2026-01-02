@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/build_context_ext.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../blocs/garage_state.dart';
-import '../theme/garage_theme.dart';
+import '../l10n/app_localizations.dart';
+import '../widgets/glass_widget.dart';
 
 class VehicleDetailsScreen extends StatelessWidget {
   final String vehicleId;
@@ -14,6 +16,10 @@ class VehicleDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final currencyFormat = NumberFormat.simpleCurrency(locale: l10n.localeName);
+
     return BlocBuilder<GarageBloc, GarageState>(
       builder: (context, state) {
         final vehicle = state.vehicles.firstWhere((v) => v.id == vehicleId);
@@ -23,8 +29,10 @@ class VehicleDetailsScreen extends StatelessWidget {
           ..sort((a, b) => b.date.compareTo(a.date));
 
         return Scaffold(
-          extendBodyBehindAppBar: true,
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
             title: Text(vehicle.name),
             actions: [
               IconButton(
@@ -33,60 +41,60 @@ class VehicleDetailsScreen extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.delete_rounded, color: Colors.redAccent),
-                onPressed: () => _confirmDelete(context, vehicle.id),
+                onPressed: () => _confirmDelete(context, vehicle.id, l10n),
               ),
             ],
           ),
-          body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF1A1A2E), Color(0xFF0F0F0F)],
-              ),
-            ),
-            child: CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
-                    child: Column(
-                      children: [
-                        _buildVehicleHeader(vehicle),
-                        const SizedBox(height: 30),
-                        _buildStatsGrid(vehicle),
-                        const SizedBox(height: 40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Service History',
-                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
-                            TextButton.icon(
-                              onPressed: () => context.push('/add_maintenance/${vehicle.id}'),
-                              icon: const Icon(Icons.add_circle_outline),
-                              label: const Text('Add Record'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
+          body: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  child: Column(
+                    children: [
+                      _buildVehicleHeader(vehicle, isDark),
+                      const SizedBox(height: 30),
+                      _buildStatsGrid(vehicle, isDark, l10n),
+                      const SizedBox(height: 40),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            l10n.maintenanceHistory,
+                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => context.push('/add_maintenance/${vehicle.id}'),
+                            icon: const Icon(Icons.add_circle_outline),
+                            label: Text(l10n.addRecord),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ),
-                records.isEmpty
-                    ? const SliverFillRemaining(
-                        child: Center(child: Text('No records yet', style: TextStyle(color: Colors.white54))),
-                      )
-                    : SliverList(
+              ),
+              records.isEmpty
+                  ? SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(
+                        child: Text(
+                          l10n.noMaintenance,
+                          style: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
+                        ),
+                      ),
+                    )
+                  : SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             final record = records[index];
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                              padding: const EdgeInsets.only(bottom: 12),
                               child: GlassWidget(
-                                padding: const EdgeInsets.all(16),
+                                padding: const EdgeInsets.all(12),
                                 child: ListTile(
                                   onTap: () => context.push('/edit_maintenance', extra: record),
                                   contentPadding: EdgeInsets.zero,
@@ -103,24 +111,25 @@ class VehicleDetailsScreen extends StatelessWidget {
                                     style: const TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   subtitle: Text(
-                                    DateFormat.yMMMd().format(record.date),
-                                    style: const TextStyle(color: Colors.white70),
+                                    DateFormat.yMMMd(l10n.localeName).format(record.date),
+                                    style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
                                   ),
                                   trailing: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(
-                                        '\$${record.cost.toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                          color: Colors.greenAccent,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                      if (record.cost > 0)
+                                        Text(
+                                          currencyFormat.format(record.cost),
+                                          style: const TextStyle(
+                                            color: Colors.greenAccent,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
                                         ),
-                                      ),
                                       Text(
                                         '${record.mileageAtService.toInt()} km',
-                                        style: const TextStyle(fontSize: 12, color: Colors.white54),
+                                        style: TextStyle(fontSize: 11, color: isDark ? Colors.white54 : Colors.black54),
                                       ),
                                     ],
                                   ),
@@ -131,76 +140,79 @@ class VehicleDetailsScreen extends StatelessWidget {
                           childCount: records.length,
                         ),
                       ),
-              ],
-            ),
+                    ),
+            ],
           ),
-          floatingActionButton: FloatingActionButton.extended(
+          floatingActionButton: FloatingActionButton(
             onPressed: () => context.push('/add_maintenance/${vehicle.id}'),
-            icon: const Icon(Icons.add),
-            label: const Text('Add Record'),
             backgroundColor: Colors.blueAccent,
-            foregroundColor: Colors.white,
+            child: const Icon(Icons.add, color: Colors.white),
           ),
         );
       },
     );
   }
 
-  Widget _buildVehicleHeader(vehicle) {
+  Widget _buildVehicleHeader(dynamic vehicle, bool isDark) {
     return Column(
       children: [
         Container(
-          width: 120,
-          height: 120,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
             color: Colors.blueAccent.withOpacity(0.1),
             shape: BoxShape.circle,
             border: Border.all(color: Colors.blueAccent.withOpacity(0.3), width: 2),
           ),
-          child: Icon(_getVehicleIcon(vehicle.type), size: 60, color: Colors.blueAccent),
+          child: Icon(_getVehicleIcon(vehicle.type), size: 50, color: Colors.blueAccent),
         ),
         const SizedBox(height: 16),
         Text(
           vehicle.name,
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         Text(
-          '${vehicle.year} ${vehicle.type}',
-          style: const TextStyle(fontSize: 16, color: Colors.white70),
+          '${vehicle.year} • ${vehicle.type}',
+          style: TextStyle(fontSize: 15, color: isDark ? Colors.white70 : Colors.black54),
         ),
       ],
     );
   }
 
-  Widget _buildStatsGrid(vehicle) {
+  Widget _buildStatsGrid(dynamic vehicle, bool isDark, AppLocalizations l10n) {
     return Row(
       children: [
         Expanded(
-          child: _buildStatCard('Mileage', '${vehicle.currentMileage.toInt()}', 'km'),
+          child: _buildStatCard(l10n.currentMileage, '${vehicle.currentMileage.toInt()}', 'km', isDark),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: _buildStatCard('Status', 'Good', ''),
+          child: _buildStatCard(l10n.year, '${vehicle.year}', '', isDark),
         ),
       ],
     );
   }
 
-  Widget _buildStatCard(String label, String value, String unit) {
+  Widget _buildStatCard(String label, String value, String unit, bool isDark) {
     return GlassWidget(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Column(
         children: [
-          Text(label, style: const TextStyle(color: Colors.white54, fontSize: 14)),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 12),
+          ),
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(value, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               if (unit.isNotEmpty) ...[
                 const SizedBox(width: 4),
-                Text(unit, style: const TextStyle(fontSize: 14, color: Colors.white54)),
+                Text(unit, style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54)),
               ],
             ],
           ),
@@ -209,22 +221,21 @@ class VehicleDetailsScreen extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, String id) {
+  void _confirmDelete(BuildContext context, String id, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A2E),
-        title: const Text('Delete Vehicle?'),
-        content: const Text('This will permanently remove this vehicle and all its history.'),
+        title: Text(l10n.delete),
+        content: Text(l10n.localeName == 'vi' ? 'Bạn có chắc chắn muốn xóa xe này không?' : 'Are you sure you want to delete this vehicle?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(l10n.localeName == 'vi' ? 'Hủy' : 'Cancel')),
           TextButton(
             onPressed: () {
               context.read<GarageBloc>().add(DeleteVehicle(id));
               Navigator.pop(ctx);
               context.pop();
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.redAccent)),
+            child: Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
           ),
         ],
       ),

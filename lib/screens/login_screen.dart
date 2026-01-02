@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/build_context_ext.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../blocs/garage_state.dart';
 import '../theme/garage_theme.dart';
+import '../widgets/glass_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -31,6 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -51,24 +55,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Icon(Icons.garage_rounded, size: 80, color: Colors.blueAccent),
                   const SizedBox(height: 16),
                   Text(
-                    _isLogin ? 'Welcome Back' : 'Create Account',
+                    _isLogin ? l10n.login : l10n.register,
                     style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 32),
                   TextField(
                     controller: _usernameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      prefixIcon: Icon(Icons.person),
+                    decoration: InputDecoration(
+                      labelText: l10n.username,
+                      prefixIcon: const Icon(Icons.person),
                     ),
                   ),
                   const SizedBox(height: 16),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
+                    decoration: InputDecoration(
+                      labelText: l10n.password,
+                      prefixIcon: const Icon(Icons.lock),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -95,13 +99,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 foregroundColor: Colors.white,
                                 padding: const EdgeInsets.symmetric(vertical: 16),
                               ),
-                              child: Text(_isLogin ? 'Login' : 'Register'),
+                              child: Text(_isLogin ? l10n.login : l10n.register),
                             ),
                           ),
                           const SizedBox(height: 16),
                           TextButton(
                             onPressed: () => setState(() => _isLogin = !_isLogin),
-                            child: Text(_isLogin ? 'Need an account? Register' : 'Have an account? Login'),
+                            child: Text(_isLogin ? l10n.register : l10n.login),
                           ),
                         ],
                       );
