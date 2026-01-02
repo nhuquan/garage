@@ -12,14 +12,20 @@ echo "📦 Syncing files to ~/$REMOTE_DIR..."
 ssh $SERVER_USER@$SERVER_IP "mkdir -p ~/$REMOTE_DIR"
 
 # Clean up any existing macOS metadata files on the server that might cause issues
-ssh $SERVER_USER@$SERVER_IP "find ~/$REMOTE_DIR -name '._*' -delete"
+echo "🧹 Cleaning up old metadata on server..."
+ssh $SERVER_USER@$SERVER_IP "find ~/$REMOTE_DIR -name '._*' -delete 2>/dev/null"
+ssh $SERVER_USER@$SERVER_IP "find ~/$REMOTE_DIR -name '.DS_Store' -delete 2>/dev/null"
+
+# Clean up macOS metadata files locally before syncing
+echo "🧹 Cleaning local metadata..."
+dot_clean -m .
 
 # Sync using tar while excluding macOS metadata and other unnecessary files
 tar -cz --exclude='.git' \
         --exclude='.dart_tool' \
         --exclude='build' \
-        --exclude='.DS_Store' \
-        --exclude='._*' \
+        --exclude='*/.DS_Store' \
+        --exclude='*/._*' \
         . | ssh $SERVER_USER@$SERVER_IP "tar -xz -C ~/$REMOTE_DIR"
 
 # Step 2: Run docker-compose on the server

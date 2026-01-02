@@ -4,9 +4,9 @@ build/
 .packages
 pubspec.lock
 
-# Ignore macOS metadata files
-.DS_Store
-._*
+# Ignore macOS metadata files EVERYWHERE
+**/.DS_Store
+**/._*
 
 # Ignore Git
 .git/
