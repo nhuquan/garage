@@ -3,11 +3,11 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "38acff411431e328b3a96cb74ab23232",
+const RESOURCES = {"flutter_bootstrap.js": "6d306b0ee6e616a17f0bd46d2873c161",
 "version.json": "18087b9e1fc34af14046e13e98c31066",
 "index.html": "c1211dc077d150fcf5879def9e98a6b5",
 "/": "c1211dc077d150fcf5879def9e98a6b5",
-"main.dart.js": "858507657caa99e64c40429c9f5e60b2",
+"main.dart.js": "67e212305b901a6bb3ef82f889619636",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e",
 "favicon.png": "f1a99be940283759b8b25293d8a84d57",
 "icons/Icon-192.png": "9a91ed739838c3dfdcd0eb0bee79b7e8",
@@ -22,7 +22,7 @@ const RESOURCES = {"flutter_bootstrap.js": "38acff411431e328b3a96cb74ab23232",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
 "assets/shaders/stretch_effect.frag": "40d68efbbf360632f614c731219e95f0",
 "assets/AssetManifest.bin": "7ce0c70e23f5aabf0db33423cc4be615",
-"assets/fonts/MaterialIcons-Regular.otf": "ebcb135ab0a6dcc839ca49339cedaaf0",
+"assets/fonts/MaterialIcons-Regular.otf": "c5ab67449feee3cf7d647f18f682b7c6",
 "assets/assets/app_icon.png": "96b7c3c6af703c631c2551f5c50d5cc4",
 "assets/assets/logos/ford.png": "a1d5cdf7f696b66697378e1f6d68557e",
 "assets/assets/logos/peugeot.png": "9d23e4ca2ebb586ccad6a55e699b1c93",

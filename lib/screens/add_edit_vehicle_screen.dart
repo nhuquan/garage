@@ -22,6 +22,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
   late TextEditingController _nameController;
   late TextEditingController _yearController;
   late TextEditingController _mileageController;
+  late TextEditingController _descriptionController;
   String _selectedType = 'Car';
 
   final List<String> _categories = [
@@ -39,15 +40,22 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
     _nameController = TextEditingController(text: widget.vehicle?.name ?? '');
     _yearController = TextEditingController(text: widget.vehicle?.year.toString() ?? '');
     _mileageController = TextEditingController(text: widget.vehicle?.currentMileage.toString() ?? '');
+    _descriptionController = TextEditingController(text: widget.vehicle?.description ?? '');
     _selectedType = widget.vehicle?.type ?? 'Car';
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _yearController.dispose();
-    _mileageController.dispose();
+    _nameController = disposeController(_nameController);
+    _yearController = disposeController(_yearController);
+    _mileageController = disposeController(_mileageController);
+    _descriptionController = disposeController(_descriptionController);
     super.dispose();
+  }
+
+  TextEditingController disposeController(TextEditingController controller) {
+    controller.dispose();
+    return controller;
   }
 
   void _saveVehicle() {
@@ -63,6 +71,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           type: _selectedType,
           year: year,
           currentMileage: mileage,
+          description: _descriptionController.text,
         );
         context.read<GarageBloc>().add(AddVehicle(newVehicle));
       } else {
@@ -71,6 +80,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           type: _selectedType,
           year: year,
           currentMileage: mileage,
+          description: _descriptionController.text,
         );
         context.read<GarageBloc>().add(UpdateVehicle(updatedVehicle));
       }
@@ -132,6 +142,18 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: _buildInputDecoration(
+                  l10n.localeName == 'vi' ? 'Mô tả' : 'Description',
+                  Icons.description_rounded,
+                  isDark,
+                ).copyWith(
+                  alignLabelWithHint: true,
+                ),
               ),
               const SizedBox(height: 40),
               SizedBox(

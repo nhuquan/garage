@@ -29,14 +29,15 @@ Future<Response> onRequest(RequestContext context, String id) async {
       await conn.execute(
         '''
         UPDATE vehicles 
-        SET name = \u00241, type = \u00242, year = \u00243, current_mileage = \u00244
-        WHERE id = \u00245
+        SET name = \u00241, type = \u00242, year = \u00243, current_mileage = \u00244, description = \u00245
+        WHERE id = \u00246
         ''',
         parameters: [
           body['name'],
           body['type'],
           body['year'],
           body['currentMileage'],
+          body['description'] ?? '',
           id,
         ],
       );

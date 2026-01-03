@@ -51,7 +51,8 @@ class DbClient {
         name TEXT NOT NULL,
         type TEXT NOT NULL,
         year INTEGER NOT NULL,
-        current_mileage DOUBLE PRECISION NOT NULL
+        current_mileage DOUBLE PRECISION NOT NULL,
+        description TEXT NOT NULL DEFAULT ''
       );
     ''');
 
@@ -70,6 +71,10 @@ class DbClient {
 
     await conn.execute('''
       ALTER TABLE maintenance_items ADD COLUMN IF NOT EXISTS type TEXT NOT NULL DEFAULT 'other';
+    ''');
+
+    await conn.execute('''
+      ALTER TABLE vehicles ADD COLUMN IF NOT EXISTS description TEXT NOT NULL DEFAULT '';
     ''');
   }
 }

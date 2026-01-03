@@ -20,7 +20,7 @@ Future<Response> onRequest(RequestContext context) async {
 
 Future<Response> _getVehicles(Connection conn, String userId) async {
   final result = await conn.execute(
-    'SELECT id, name, type, year, current_mileage FROM vehicles WHERE user_id = \u00241',
+    'SELECT id, name, type, year, current_mileage, description FROM vehicles WHERE user_id = \u00241',
     parameters: [userId],
   );
 
@@ -32,6 +32,7 @@ Future<Response> _getVehicles(Connection conn, String userId) async {
       'type': columns['type'],
       'year': columns['year'],
       'currentMileage': columns['current_mileage'],
+      'description': columns['description'],
     };
   }).toList();
 
@@ -45,13 +46,14 @@ Future<Response> _createVehicle(RequestContext context, Connection conn, String 
   final type = body['type'] as String;
   final year = body['year'] as int;
   final currentMileage = (body['currentMileage'] as num).toDouble();
+  final description = body['description'] as String? ?? '';
 
   await conn.execute(
     '''
-    INSERT INTO vehicles (id, user_id, name, type, year, current_mileage)
-    VALUES (\u00241, \u00242, \u00243, \u00244, \u00245, \u00246)
+    INSERT INTO vehicles (id, user_id, name, type, year, current_mileage, description)
+    VALUES (\u00241, \u00242, \u00243, \u00244, \u00245, \u00246, \u00247)
     ''',
-    parameters: [id, userId, name, type, year, currentMileage],
+    parameters: [id, userId, name, type, year, currentMileage, description],
   );
 
   return Response.json(

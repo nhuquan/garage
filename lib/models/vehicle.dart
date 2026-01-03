@@ -7,6 +7,7 @@ class Vehicle extends Equatable {
   final String type; // 'Car', 'Motorcycle', 'Bicycle', 'Truck', 'Other'
   final int year;
   final double currentMileage;
+  final String description;
 
   const Vehicle({
     required this.id,
@@ -14,6 +15,7 @@ class Vehicle extends Equatable {
     required this.type,
     required this.year,
     required this.currentMileage,
+    this.description = '',
   });
 
   Vehicle copyWith({
@@ -22,6 +24,7 @@ class Vehicle extends Equatable {
     String? type,
     int? year,
     double? currentMileage,
+    String? description,
   }) {
     return Vehicle(
       id: id ?? this.id,
@@ -29,6 +32,7 @@ class Vehicle extends Equatable {
       type: type ?? this.type,
       year: year ?? this.year,
       currentMileage: currentMileage ?? this.currentMileage,
+      description: description ?? this.description,
     );
   }
 
@@ -39,6 +43,7 @@ class Vehicle extends Equatable {
       'type': type,
       'year': year,
       'currentMileage': currentMileage,
+      'description': description,
     };
   }
 
@@ -49,6 +54,7 @@ class Vehicle extends Equatable {
       type: map['type'] as String,
       year: map['year'] as int,
       currentMileage: (map['currentMileage'] as num).toDouble(),
+      description: map['description'] as String? ?? '',
     );
   }
 
