@@ -37,12 +37,12 @@ flutter:
 
   assets:
     - assets/app_icon.png
-    - assets/logos/ford.png
-    - assets/logos/honda.png
-    - assets/logos/peugeot.png
-    - assets/logos/suzuki.png
-    - assets/logos/toyota.png
-    - assets/logos/yamaha.png
+    - logos/ford.png
+    - logos/honda.png
+    - logos/peugeot.png
+    - logos/suzuki.png
+    - logos/toyota.png
+    - logos/yamaha.png
 
 flutter_launcher_icons:
   android: "launcher_icon"

@@ -98026,12 +98026,12 @@ return A.as(["id",s.a,"name",s.b,"type",s.c,"year",s.d,"currentMileage",s.e,"des
 ghJ(){var s=this
 return[s.a,s.b,s.c,s.d,s.e]},
 gYK(){var s=this.b.toLowerCase()
-if(B.c.n(s,"ford"))return"assets/logos/ford.png"
-if(B.c.n(s,"toyota"))return"assets/logos/toyota.png"
-if(B.c.n(s,"honda"))return"assets/logos/honda.png"
-if(B.c.n(s,"suzuki"))return"assets/logos/suzuki.png"
-if(B.c.n(s,"yamaha"))return"assets/logos/yamaha.png"
-if(B.c.n(s,"peugeot"))return"assets/logos/peugeot.png"
+if(B.c.n(s,"ford"))return"logos/ford.png"
+if(B.c.n(s,"toyota"))return"logos/toyota.png"
+if(B.c.n(s,"honda"))return"logos/honda.png"
+if(B.c.n(s,"suzuki"))return"logos/suzuki.png"
+if(B.c.n(s,"yamaha"))return"logos/yamaha.png"
+if(B.c.n(s,"peugeot"))return"logos/peugeot.png"
 return null},
 gaBu(){switch(this.c.toLowerCase()){case"car":return B.qN
 case"motorcycle":case"moto":return B.qT
