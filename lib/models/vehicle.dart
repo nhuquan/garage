@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import '../gen/assets.gen.dart';
 
 class Vehicle extends Equatable {
   final String id;
@@ -61,14 +62,14 @@ class Vehicle extends Equatable {
   @override
   List<Object?> get props => [id, name, type, year, currentMileage];
 
-  String? get brandLogo {
+  AssetGenImage? get brandLogo {
     final lowerName = name.toLowerCase();
-    if (lowerName.contains('ford')) return 'logos/ford.png';
-    if (lowerName.contains('toyota')) return 'logos/toyota.png';
-    if (lowerName.contains('honda')) return 'logos/honda.png';
-    if (lowerName.contains('suzuki')) return 'logos/suzuki.png';
-    if (lowerName.contains('yamaha')) return 'logos/yamaha.png';
-    if (lowerName.contains('peugeot')) return 'logos/peugeot.png';
+    if (lowerName.contains('ford')) return Assets.logos.ford;
+    if (lowerName.contains('toyota')) return Assets.logos.toyota;
+    if (lowerName.contains('honda')) return Assets.logos.honda;
+    if (lowerName.contains('suzuki')) return Assets.logos.suzuki;
+    if (lowerName.contains('yamaha')) return Assets.logos.yamaha;
+    if (lowerName.contains('peugeot')) return Assets.logos.peugeot;
     return null;
   }
 

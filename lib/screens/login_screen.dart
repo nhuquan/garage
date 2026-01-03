@@ -5,6 +5,7 @@ import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../blocs/garage_state.dart';
 import '../widgets/glass_widget.dart';
+import '../gen/assets.gen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -44,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.garage_rounded, size: 80, color: Colors.blueAccent),
+                Assets.appIcon.image(width: 80, height: 80),
                 const SizedBox(height: 16),
                 Text(
                   _isLogin ? l10n.login : l10n.register,

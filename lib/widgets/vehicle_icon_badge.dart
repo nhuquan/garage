@@ -50,8 +50,7 @@ class VehicleIconBadge extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Image.asset(
-                vehicle.brandLogo!,
+              child: vehicle.brandLogo!.image(
                 width: badgeSize,
                 height: badgeSize,
                 fit: BoxFit.contain,
