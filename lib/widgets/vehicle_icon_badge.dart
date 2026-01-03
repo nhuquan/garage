@@ -19,19 +19,66 @@ class VehicleIconBadge extends StatelessWidget {
     this.badgePadding = 6,
   });
 
+  Color _getTypeColor(String type) {
+    switch (type.toLowerCase()) {
+      case 'car':
+        return Colors.green;
+      case 'motorcycle':
+      case 'moto':
+        return Colors.deepOrange;
+      case 'bicycle':
+      case 'bike':
+        return Colors.greenAccent;
+      case 'truck':
+        return Colors.deepPurpleAccent;
+      default:
+        return Colors.blueGrey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final typeColor = _getTypeColor(vehicle.type);
+    
     return Stack(
       children: [
         Container(
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: Colors.blueAccent.withOpacity(0.1),
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.blueAccent.withOpacity(0.3), width: 2),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                typeColor.withOpacity(0.2),
+                typeColor.withOpacity(0.05),
+              ],
+            ),
+            border: Border.all(
+              color: typeColor.withOpacity(0.3),
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: typeColor.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
           ),
-          child: Icon(vehicle.vehicleIcon, size: iconSize, color: Colors.blueAccent),
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [typeColor, typeColor.withOpacity(0.7)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ).createShader(bounds),
+            child: Icon(
+              vehicle.vehicleIcon,
+              size: iconSize,
+              color: Colors.white,
+            ),
+          ),
         ),
         if (vehicle.brandLogo != null)
           Positioned(

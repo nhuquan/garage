@@ -21,7 +21,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _yearController;
-  late TextEditingController _mileageController;
   late TextEditingController _descriptionController;
   String _selectedType = 'Car';
 
@@ -39,7 +38,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.vehicle?.name ?? '');
     _yearController = TextEditingController(text: widget.vehicle?.year.toString() ?? '');
-    _mileageController = TextEditingController(text: widget.vehicle?.currentMileage.toString() ?? '');
     _descriptionController = TextEditingController(text: widget.vehicle?.description ?? '');
     _selectedType = widget.vehicle?.type ?? 'Car';
   }
@@ -48,7 +46,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
   void dispose() {
     _nameController = disposeController(_nameController);
     _yearController = disposeController(_yearController);
-    _mileageController = disposeController(_mileageController);
     _descriptionController = disposeController(_descriptionController);
     super.dispose();
   }
@@ -62,7 +59,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
       final year = int.parse(_yearController.text);
-      final mileage = double.parse(_mileageController.text);
 
       if (widget.vehicle == null) {
         final newVehicle = Vehicle(
@@ -70,7 +66,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           name: name,
           type: _selectedType,
           year: year,
-          currentMileage: mileage,
+          currentMileage: 0,
           description: _descriptionController.text,
         );
         context.read<GarageBloc>().add(AddVehicle(newVehicle));
@@ -79,7 +75,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           name: name,
           type: _selectedType,
           year: year,
-          currentMileage: mileage,
           description: _descriptionController.text,
         );
         context.read<GarageBloc>().add(UpdateVehicle(updatedVehicle));
@@ -129,15 +124,6 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
                         controller: _yearController,
                         keyboardType: TextInputType.number,
                         decoration: _buildInputDecoration(l10n.year, Icons.calendar_today_rounded, isDark),
-                        validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                    ),
-                  ),
-                  const SizedBox(width: 20),
-                  Expanded(
-                    child:  TextFormField(
-                        controller: _mileageController,
-                        keyboardType: TextInputType.number,
-                        decoration: _buildInputDecoration(l10n.currentMileage, Icons.speed_rounded, isDark),
                         validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                     ),
                   ),

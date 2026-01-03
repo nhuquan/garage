@@ -211,17 +211,20 @@ class _VehicleCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.push('/vehicle_details/${vehicle.id}'),
       child: GlassWidget(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            VehicleIconBadge(
-              vehicle: vehicle,
-              isDark: isDark,
-              size: 80,
-              iconSize: 40,
-              badgeSize: 18,
-              badgePadding: 4,
+            Expanded(
+              child: Center(
+                child: VehicleIconBadge(
+                  vehicle: vehicle,
+                  isDark: isDark,
+                  size: 85,
+                  iconSize: 45,
+                  badgeSize: 20,
+                  badgePadding: 5,
+                ),
+              ),
             ),
             const SizedBox(height: 12),
             Text(
@@ -229,31 +232,35 @@ class _VehicleCard extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             const SizedBox(height: 4),
             Text(
-              '${vehicle.year} • ${vehicle.type}',
+              '${vehicle.year}',
               style: TextStyle(
-                fontSize: 12,
-                color: (isDark ? Colors.white70 : Colors.black54),
+                fontSize: 13,
+                color: isDark ? Colors.white70 : Colors.black54,
               ),
             ),
             const SizedBox(height: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
-                color: (isDark ? Colors.white : Colors.black).withOpacity(0.05),
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.blueAccent.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.speed, size: 12, color: Colors.blueAccent),
-                  const SizedBox(width: 4),
+                  const Icon(Icons.speed_rounded, size: 14, color: Colors.blueAccent),
+                  const SizedBox(width: 6),
                   Text(
                     '${vehicle.currentMileage.toInt()} km',
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
                   ),
                 ],
               ),

@@ -55,8 +55,6 @@ class VehicleDetailsScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       _buildVehicleHeader(vehicle, isDark),
-                      const SizedBox(height: 30),
-                      _buildStatsGrid(vehicle, isDark, l10n),
                       const SizedBox(height: 40),
                       GlassWidget(
                         padding: EdgeInsets.zero,
@@ -193,61 +191,20 @@ class VehicleDetailsScreen extends StatelessWidget {
   Widget _buildVehicleHeader(Vehicle vehicle, bool isDark) {
     return Column(
       children: [
-        VehicleIconBadge(vehicle: vehicle, isDark: isDark),
+        VehicleIconBadge(vehicle: vehicle, isDark: isDark, size: 120, iconSize: 60),
         const SizedBox(height: 16),
         Text(
           vehicle.name,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
         Text(
           '${vehicle.year} • ${vehicle.type}',
-          style: TextStyle(fontSize: 15, color: isDark ? Colors.white70 : Colors.black54),
+          style: TextStyle(fontSize: 16, color: isDark ? Colors.white70 : Colors.black54),
         ),
       ],
     );
   }
 
-  Widget _buildStatsGrid(Vehicle vehicle, bool isDark, AppLocalizations l10n) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildStatCard(l10n.currentMileage, '${vehicle.currentMileage.toInt()}', 'km', isDark),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildStatCard(l10n.year, '${vehicle.year}', '', isDark),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatCard(String label, String value, String unit, bool isDark) {
-    return GlassWidget(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        children: [
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: isDark ? Colors.white54 : Colors.black54, fontSize: 12),
-          ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              if (unit.isNotEmpty) ...[
-                const SizedBox(width: 4),
-                Text(unit, style: TextStyle(fontSize: 12, color: isDark ? Colors.white54 : Colors.black54)),
-              ],
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 
   void _confirmDelete(BuildContext context, String id, AppLocalizations l10n) {
     showDialog(
