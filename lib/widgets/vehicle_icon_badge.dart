@@ -55,6 +55,13 @@ class VehicleIconBadge extends StatelessWidget {
                 width: badgeSize,
                 height: badgeSize,
                 fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.store_rounded,
+                    size: badgeSize * 0.8,
+                    color: isDark ? Colors.white54 : Colors.black45,
+                  );
+                },
               ),
             ),
           ),
