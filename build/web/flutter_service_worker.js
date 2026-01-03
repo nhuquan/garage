@@ -3,20 +3,18 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"flutter_bootstrap.js": "ee0446d86939290644bf0d85c3be78e1",
+const RESOURCES = {"flutter_bootstrap.js": "87359e81f092b58f9032319095117618",
 "version.json": "18087b9e1fc34af14046e13e98c31066",
 "index.html": "c1211dc077d150fcf5879def9e98a6b5",
 "/": "c1211dc077d150fcf5879def9e98a6b5",
 "main.dart.js": "ccd83caa6023e50b882f024d0ac0754d",
 "flutter.js": "24bc71911b75b5f8135c949e27a2984e",
 "favicon.png": "f1a99be940283759b8b25293d8a84d57",
-"main.dart.mjs": "b5623b55cfeaf8cbca4836c31ebf529d",
 "icons/Icon-192.png": "9a91ed739838c3dfdcd0eb0bee79b7e8",
 "icons/Icon-maskable-192.png": "9a91ed739838c3dfdcd0eb0bee79b7e8",
 "icons/Icon-maskable-512.png": "e279f0d7ca717e51d13e84fdd36e7eca",
 "icons/Icon-512.png": "e279f0d7ca717e51d13e84fdd36e7eca",
 "manifest.json": "76464cf64b8fdcbe1f712727e37835b0",
-"main.dart.wasm": "69e370aa79e9c3554b94429be280d5cf",
 "assets/logos/ford.png": "a1d5cdf7f696b66697378e1f6d68557e",
 "assets/logos/peugeot.png": "9d23e4ca2ebb586ccad6a55e699b1c93",
 "assets/logos/toyota.png": "e76b4cbd3ca5a0e777f576dcd0dd8cdb",
@@ -47,8 +45,6 @@ const RESOURCES = {"flutter_bootstrap.js": "ee0446d86939290644bf0d85c3be78e1",
 // The application shell files that are downloaded before a service worker can
 // start.
 const CORE = ["main.dart.js",
-"main.dart.wasm",
-"main.dart.mjs",
 "index.html",
 "flutter_bootstrap.js",
 "assets/AssetManifest.bin.json",
