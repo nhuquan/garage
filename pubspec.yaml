@@ -35,6 +35,10 @@ flutter:
   generate: true
   uses-material-design: true
 
+  assets:
+    - assets/app_icon.png
+    - assets/logos/
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

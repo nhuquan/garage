@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_state.dart';
 import '../widgets/glass_widget.dart';
+import '../models/vehicle.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -94,7 +95,7 @@ class DashboardScreen extends StatelessWidget {
 }
 
 class _VehicleCard extends StatelessWidget {
-  final dynamic vehicle;
+  final Vehicle vehicle;
 
   const _VehicleCard({required this.vehicle});
 
@@ -109,18 +110,7 @@ class _VehicleCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                _getVehicleIcon(vehicle.type),
-                size: 32,
-                color: Colors.blueAccent,
-              ),
-            ),
+            IconWithBrandLogo(vehicle, isDark),
             const SizedBox(height: 12),
             Text(
               vehicle.name,
@@ -162,20 +152,45 @@ class _VehicleCard extends StatelessWidget {
     );
   }
 
-  IconData _getVehicleIcon(String type) {
-    switch (type.toLowerCase()) {
-      case 'car':
-        return Icons.directions_car_rounded;
-      case 'motorcycle':
-      case 'moto':
-        return Icons.two_wheeler_rounded;
-      case 'bicycle':
-      case 'bike':
-        return Icons.pedal_bike_rounded;
-      case 'truck':
-        return Icons.local_shipping_rounded;
-      default:
-        return Icons.more_horiz_rounded;
-    }
+  Stack IconWithBrandLogo(Vehicle vehicle, bool isDark) {
+    return Stack(
+      children: [
+        Container(
+          width: 100,
+          height: 100,
+          decoration: BoxDecoration(
+            color: Colors.blueAccent.withOpacity(0.1),
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.blueAccent.withOpacity(0.3), width: 2),
+          ),
+          child: Icon(vehicle.vehicleIcon, size: 50, color: Colors.blueAccent),
+        ),
+        if (vehicle.brandLogo != null)
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.grey[850] : Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Image.asset(
+                vehicle.brandLogo!,
+                width: 24,
+                height: 24,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
