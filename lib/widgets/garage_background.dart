@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 class GarageBackground extends StatelessWidget {
   final Widget child;
-  const GarageBackground({super.key, required this.child});
+  final bool isLoading;
+
+  const GarageBackground({
+    super.key,
+    required this.child,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Material(
-      color: Colors.transparent,
       child: Container(
         decoration: BoxDecoration(
           gradient: isDark
@@ -31,7 +36,20 @@ class GarageBackground extends StatelessWidget {
                   ],
                 ),
         ),
-        child: child,
+        child: Stack(
+          children: [
+            child,
+            if (isLoading)
+              Container(
+                color: (isDark ? Colors.black : Colors.white).withOpacity(0.5),
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.blueAccent,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

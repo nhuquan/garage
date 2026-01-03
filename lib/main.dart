@@ -52,6 +52,44 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+class PageLoader extends StatefulWidget {
+  final Widget child;
+  const PageLoader({super.key, required this.child});
+
+  @override
+  State<PageLoader> createState() => _PageLoaderState();
+}
+
+class _PageLoaderState extends State<PageLoader> {
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GarageBackground(
+      isLoading: _isLoading,
+      child: _isLoading ? const SizedBox.expand() : widget.child,
+    );
+  }
+}
+
+Page<T> buildPageWithTransition<T>(Widget child) {
+  return CustomTransitionPage<T>(
+    child: PageLoader(child: child),
+    transitionDuration: const Duration(milliseconds: 300),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(opacity: animation, child: child);
+    },
+  );
+}
+
 class _MyAppState extends State<MyApp> {
   late final GarageBloc _garageBloc;
   late final GoRouter _router;
@@ -84,7 +122,7 @@ class _MyAppState extends State<MyApp> {
       routes: [
         GoRoute(
           path: '/login',
-          builder: (context, state) => const LoginScreen(),
+          pageBuilder: (context, state) => buildPageWithTransition(const LoginScreen()),
         ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
@@ -92,55 +130,50 @@ class _MyAppState extends State<MyApp> {
           routes: [
             GoRoute(
               path: '/',
-              builder: (context, state) => const DashboardScreen(),
+              pageBuilder: (context, state) => buildPageWithTransition(const DashboardScreen()),
             ),
-            // GoRoute(
-            //   path: '/history',
-            //   builder: (context, state) =>
-            //       const Center(child: Text('All History coming soon')),
-            // ),
             GoRoute(
               path: '/settings',
-              builder: (context, state) => const SettingsScreen(),
+              pageBuilder: (context, state) => buildPageWithTransition(const SettingsScreen()),
             ),
           ],
         ),
         GoRoute(
           path: '/add_vehicle',
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => const AddEditVehicleScreen(),
+          pageBuilder: (context, state) => buildPageWithTransition(const AddEditVehicleScreen()),
         ),
         GoRoute(
           path: '/edit_vehicle',
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final vehicle = state.extra as Vehicle;
-            return AddEditVehicleScreen(vehicle: vehicle);
+            return buildPageWithTransition(AddEditVehicleScreen(vehicle: vehicle));
           },
         ),
         GoRoute(
           path: '/vehicle_details/:id',
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final id = state.pathParameters['id']!;
-            return VehicleDetailsScreen(vehicleId: id);
+            return buildPageWithTransition(VehicleDetailsScreen(vehicleId: id));
           },
         ),
         GoRoute(
           path: '/add_maintenance/:vehicleId',
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final vehicleId = state.pathParameters['vehicleId']!;
-            return AddEditMaintenanceScreen(vehicleId: vehicleId);
+            return buildPageWithTransition(AddEditMaintenanceScreen(vehicleId: vehicleId));
           },
         ),
         GoRoute(
           path: '/edit_maintenance',
           parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) {
+          pageBuilder: (context, state) {
             final item = state.extra as MaintenanceItem;
-            return AddEditMaintenanceScreen(
-                vehicleId: item.vehicleId, item: item);
+            return buildPageWithTransition(AddEditMaintenanceScreen(
+                vehicleId: item.vehicleId, item: item));
           },
         ),
       ],
@@ -169,7 +202,6 @@ class _MyAppState extends State<MyApp> {
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             routerConfig: _router,
-            builder: (context, child) => GarageBackground(child: child!),
           );
         },
       ),
