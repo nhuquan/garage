@@ -109,20 +109,17 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
           key: _formKey,
           child: Column(
             children: [
-              _buildFieldWrapper(
-                child: TextFormField(
+               TextFormField(
                   controller: _titleController,
                   decoration: _buildInputDecoration(
                     l10n.title,
-                    Icons.build_rounded,
+                    Icon(Icons.build_rounded),
                     isDark,
                   ),
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                ),
               ),
               const SizedBox(height: 20),
-              _buildFieldWrapper(
-                child: DropdownButtonFormField<MaintenanceType>(
+               DropdownButtonFormField<MaintenanceType>(
                   value: _selectedType,
                   decoration: _buildInputDecoration(
                     l10n.serviceType,
@@ -148,13 +145,10 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
                     }
                   },
                 ),
-              ),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: _pickDate,
-                child: _buildFieldWrapper(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  child: Column(
+                child:  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -183,53 +177,46 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
                       ),
                     ],
                   ),
-                ),
               ),
               const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
-                    child: _buildFieldWrapper(
-                      child: TextFormField(
+                    child:  TextFormField(
                         controller: _costController,
                         keyboardType: TextInputType.number,
                         decoration: _buildInputDecoration(
                           '${l10n.cost} ($currencySymbol) ${l10n.optional}',
-                          Icons.payments_rounded,
+                          Icon(Icons.payments_rounded),
                           isDark,
                         ),
-                      ),
                     ),
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: _buildFieldWrapper(
-                      child: TextFormField(
+                    child:  TextFormField(
                         controller: _mileageController,
                         keyboardType: TextInputType.number,
                         decoration: _buildInputDecoration(
                           l10n.mileageAtService,
-                          Icons.speed_rounded,
+                          Icon(Icons.speed_rounded),
                           isDark,
                         ),
                         validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                       ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 20),
-              _buildFieldWrapper(
-                child: TextFormField(
+                TextFormField(
                   controller: _notesController,
                   maxLines: 4,
                   decoration: _buildInputDecoration(
                     l10n.notes,
-                    Icons.notes_rounded,
+                    Icon(Icons.notes_rounded),
                     isDark,
                   ),
                 ),
-              ),
               const SizedBox(height: 40),
               SizedBox(
                 width: double.infinity,
@@ -254,42 +241,10 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
     );
   }
 
-  Widget _buildFieldWrapper({required Widget child, EdgeInsetsGeometry? padding}) {
-    return GlassWidget(
-      opacity: 0.08,
-      borderRadius: 16,
-      padding: padding,
-      child: child,
-    );
-  }
-
-  InputDecoration _buildInputDecoration(String label, IconData icon, bool isDark) {
+  InputDecoration _buildInputDecoration(String label, Icon icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(
-        color: isDark ? Colors.white : Colors.black87,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      floatingLabelStyle: TextStyle(
-        color: Colors.blueAccent[100],
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      hintText: label,
-      hintStyle: TextStyle(
-        color: isDark ? Colors.white38 : Colors.black38,
-        fontSize: 14,
-      ),
-      prefixIcon: Icon(icon, color: Colors.blueAccent),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      filled: true,
-      fillColor: Colors.transparent,
+      prefixIcon: icon
     );
   }
 }

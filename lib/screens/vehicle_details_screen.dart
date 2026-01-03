@@ -104,7 +104,7 @@ class VehicleDetailsScreen extends StatelessWidget {
                                       color: Colors.blueAccent.withOpacity(0.1),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: Icon(record.type.icon, color: Colors.blueAccent),
+                                    child: record.type.icon,
                                   ),
                                   title: Text(
                                     record.title,
@@ -122,7 +122,7 @@ class VehicleDetailsScreen extends StatelessWidget {
                                         Text(
                                           currencyFormat.format(record.cost),
                                           style: const TextStyle(
-                                            color: Colors.greenAccent,
+                                            color: Colors.green,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15,
                                           ),

@@ -44,20 +44,20 @@ enum MaintenanceType {
     }
   }
 
-  IconData get icon {
+  Icon get icon {
     switch (this) {
       case MaintenanceType.oil:
-        return Icons.oil_barrel_rounded;
+        return Icon(Icons.oil_barrel_outlined, color: Colors.orange);
       case MaintenanceType.brake:
-        return Icons.minor_crash_rounded; // Or icons.settings_backup_restore
+        return Icon(Icons.settings_backup_restore, color: Colors.red);
       case MaintenanceType.coolant:
-        return Icons.water_drop_rounded;
+        return Icon(Icons.water_drop_outlined, color: Colors.blue);
       case MaintenanceType.tire:
-        return Icons.tire_repair_rounded;
+        return Icon(Icons.tire_repair_outlined, color: Colors.lightGreen);
       case MaintenanceType.filter:
-        return Icons.air_rounded;
+        return Icon(Icons.air_outlined, color: Colors.green);
       case MaintenanceType.other:
-        return Icons.build_circle_rounded;
+        return Icon(Icons.build_outlined, color: Colors.blueGrey);
     }
   }
 

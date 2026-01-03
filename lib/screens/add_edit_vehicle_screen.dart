@@ -96,16 +96,13 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           key: _formKey,
           child: Column(
             children: [
-              _buildFieldWrapper(
-                child: TextFormField(
+               TextFormField(
                   controller: _nameController,
                   decoration: _buildInputDecoration(l10n.vehicleName, Icons.badge_rounded, isDark),
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
                 ),
-              ),
               const SizedBox(height: 20),
-              _buildFieldWrapper(
-                child: DropdownButtonFormField<String>(
+              DropdownButtonFormField<String>(
                   value: _selectedType,
                   dropdownColor: isDark ? const Color(0xFF1A1A2E) : Colors.white,
                   items: _categories
@@ -114,29 +111,24 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
                   onChanged: (value) => setState(() => _selectedType = value!),
                   decoration: _buildInputDecoration(l10n.vehicleType, Icons.category_rounded, isDark),
                 ),
-              ),
               const SizedBox(height: 20),
               Row(
                 children: [
                   Expanded(
-                    child: _buildFieldWrapper(
-                      child: TextFormField(
+                    child: TextFormField(
                         controller: _yearController,
                         keyboardType: TextInputType.number,
                         decoration: _buildInputDecoration(l10n.year, Icons.calendar_today_rounded, isDark),
                         validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                      ),
                     ),
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: _buildFieldWrapper(
-                      child: TextFormField(
+                    child:  TextFormField(
                         controller: _mileageController,
                         keyboardType: TextInputType.number,
                         decoration: _buildInputDecoration(l10n.currentMileage, Icons.speed_rounded, isDark),
                         validator: (value) => value == null || value.isEmpty ? 'Required' : null,
-                      ),
                     ),
                   ),
                 ],
@@ -165,41 +157,11 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
     );
   }
 
-  Widget _buildFieldWrapper({required Widget child}) {
-    return GlassWidget(
-      opacity: 0.08,
-      borderRadius: 16,
-      child: child,
-    );
-  }
 
   InputDecoration _buildInputDecoration(String label, IconData icon, bool isDark) {
     return InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(
-        color: isDark ? Colors.white : Colors.black87,
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
-      floatingLabelStyle: TextStyle(
-        color: Colors.blueAccent[100],
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      hintText: label,
-      hintStyle: TextStyle(
-        color: isDark ? Colors.white38 : Colors.black38,
-        fontSize: 14,
-      ),
-      prefixIcon: Icon(icon, color: Colors.blueAccent),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      filled: true,
-      fillColor: Colors.transparent,
+      prefixIcon: Icon(icon, color: Colors.blueAccent)
     );
   }
 }
