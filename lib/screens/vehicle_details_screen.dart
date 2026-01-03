@@ -9,6 +9,7 @@ import '../blocs/garage_state.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/glass_widget.dart';
 import '../models/vehicle.dart';
+import '../widgets/vehicle_icon_badge.dart';
 
 class VehicleDetailsScreen extends StatelessWidget {
   final String vehicleId;
@@ -157,7 +158,7 @@ class VehicleDetailsScreen extends StatelessWidget {
   Widget _buildVehicleHeader(Vehicle vehicle, bool isDark) {
     return Column(
       children: [
-        IconWithBrandLogo(vehicle, isDark),
+        VehicleIconBadge(vehicle: vehicle, isDark: isDark),
         const SizedBox(height: 16),
         Text(
           vehicle.name,
@@ -169,48 +170,6 @@ class VehicleDetailsScreen extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Stack IconWithBrandLogo(Vehicle vehicle, bool isDark) {
-    return Stack(
-        children: [
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              color: Colors.blueAccent.withOpacity(0.1),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.blueAccent.withOpacity(0.3), width: 2),
-            ),
-            child: Icon(vehicle.vehicleIcon, size: 50, color: Colors.blueAccent),
-          ),
-          if (vehicle.brandLogo != null)
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: isDark ? Colors.grey[850] : Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Image.asset(
-                  vehicle.brandLogo!,
-                  width: 24,
-                  height: 24,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-        ],
-      );
   }
 
   Widget _buildStatsGrid(Vehicle vehicle, bool isDark, AppLocalizations l10n) {

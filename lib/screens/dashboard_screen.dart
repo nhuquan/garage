@@ -6,6 +6,7 @@ import '../blocs/garage_bloc.dart';
 import '../blocs/garage_state.dart';
 import '../widgets/glass_widget.dart';
 import '../models/vehicle.dart';
+import '../widgets/vehicle_icon_badge.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -13,7 +14,6 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -32,56 +32,84 @@ class DashboardScreen extends StatelessWidget {
           }
 
           if (state.vehicles.isEmpty) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: GlassWidget(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.garage_rounded, size: 60, color: Colors.blueAccent),
-                      const SizedBox(height: 24),
-                      Text(
-                        l10n.noVehicles,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 24),
-                      ElevatedButton.icon(
-                        onPressed: () => context.push('/add_vehicle'),
-                        icon: const Icon(Icons.add),
-                        label: Text(l10n.addVehicle),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
+            return _EmptyDashboard(l10n: l10n);
           }
 
-          // Grid configuration: at least 2 columns on mobile
-          final crossAxisCount = size.width < 600 ? 2 : (size.width < 900 ? 3 : 4);
+          // Group vehicles by type
+          final groupedVehicles = <String, List<Vehicle>>{};
+          for (final vehicle in state.vehicles) {
+            final type = vehicle.type;
+            if (!groupedVehicles.containsKey(type)) {
+              groupedVehicles[type] = [];
+            }
+            groupedVehicles[type]!.add(vehicle);
+          }
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.85,
-            ),
-            itemCount: state.vehicles.length,
-            itemBuilder: (context, index) {
-              final vehicle = state.vehicles[index];
-              return _VehicleCard(vehicle: vehicle);
-            },
+          // Sort types for consistent display
+          final types = groupedVehicles.keys.toList()..sort();
+
+          return CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              for (final type in types) ...[
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+                    child: Row(
+                      children: [
+                        Icon(
+                          _getTypeIcon(type),
+                          size: 20,
+                          color: Colors.blueAccent.withOpacity(0.7),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          _getDisplayType(type, l10n),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.blueAccent.withOpacity(0.2),
+                            thickness: 1,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${groupedVehicles[type]!.length}',
+                          style: TextStyle(
+                            color: Colors.blueAccent.withOpacity(0.5),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverGrid(
+                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 220,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.8,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return _VehicleCard(vehicle: groupedVehicles[type]![index]);
+                      },
+                      childCount: groupedVehicles[type]!.length,
+                    ),
+                  ),
+                ),
+              ],
+              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+            ],
           );
         },
       ),
@@ -89,6 +117,83 @@ class DashboardScreen extends StatelessWidget {
         onPressed: () => context.push('/add_vehicle'),
         backgroundColor: Colors.blueAccent,
         child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
+      ),
+    );
+  }
+
+  IconData _getTypeIcon(String type) {
+    switch (type.toLowerCase()) {
+      case 'car':
+        return Icons.directions_car_rounded;
+      case 'motorcycle':
+      case 'moto':
+        return Icons.two_wheeler_rounded;
+      case 'bicycle':
+      case 'bike':
+        return Icons.pedal_bike_rounded;
+      case 'truck':
+        return Icons.local_shipping_rounded;
+      default:
+        return Icons.more_horiz_rounded;
+    }
+  }
+
+  String _getDisplayType(String type, dynamic l10n) {
+    // Simple localization logic or fallback to type name
+    switch (type.toLowerCase()) {
+      case 'car':
+        return l10n.localeName == 'vi' ? 'Ô tô' : 'Cars';
+      case 'motorcycle':
+      case 'moto':
+        return l10n.localeName == 'vi' ? 'Xe máy' : 'Motorcycles';
+      case 'bicycle':
+      case 'bike':
+        return l10n.localeName == 'vi' ? 'Xe đạp' : 'Bicycles';
+      case 'truck':
+        return l10n.localeName == 'vi' ? 'Xe tải' : 'Trucks';
+      default:
+        return type;
+    }
+  }
+}
+
+class _EmptyDashboard extends StatelessWidget {
+  final dynamic l10n;
+
+  const _EmptyDashboard({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: GlassWidget(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.garage_rounded, size: 60, color: Colors.blueAccent),
+              const SizedBox(height: 24),
+              Text(
+                l10n.noVehicles,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: () => context.push('/add_vehicle'),
+                icon: const Icon(Icons.add),
+                label: Text(l10n.addVehicle),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -110,7 +215,14 @@ class _VehicleCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconWithBrandLogo(vehicle, isDark),
+            VehicleIconBadge(
+              vehicle: vehicle,
+              isDark: isDark,
+              size: 80,
+              iconSize: 40,
+              badgeSize: 18,
+              badgePadding: 4,
+            ),
             const SizedBox(height: 12),
             Text(
               vehicle.name,
@@ -149,48 +261,6 @@ class _VehicleCard extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Stack IconWithBrandLogo(Vehicle vehicle, bool isDark) {
-    return Stack(
-      children: [
-        Container(
-          width: 100,
-          height: 100,
-          decoration: BoxDecoration(
-            color: Colors.blueAccent.withOpacity(0.1),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.blueAccent.withOpacity(0.3), width: 2),
-          ),
-          child: Icon(vehicle.vehicleIcon, size: 50, color: Colors.blueAccent),
-        ),
-        if (vehicle.brandLogo != null)
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[850] : Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Image.asset(
-                vehicle.brandLogo!,
-                width: 24,
-                height: 24,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-      ],
     );
   }
 }

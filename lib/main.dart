@@ -219,34 +219,54 @@ class MainLayout extends StatelessWidget {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SafeArea(child: child),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-        decoration: BoxDecoration(
-          color: isDark
-              ? Colors.white.withOpacity(0.05)
-              : Colors.white.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            if (!isDark)
-              const BoxShadow(
-                color: Colors.black12,
-                blurRadius: 10,
-                offset: Offset(0, 5),
+    return GarageBackground(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(child: child),
+        bottomNavigationBar: Container(
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(context, Icons.home_rounded, l10n.home, '/'),
-              _buildNavItem(
-                  context, Icons.settings_rounded, l10n.settings, '/settings'),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: BackdropFilter(
+              filter: ColorFilter.mode(
+                isDark
+                    ? Colors.black.withOpacity(0.2)
+                    : Colors.white.withOpacity(0.1),
+                BlendMode.overlay,
+              ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF1E1E2E).withOpacity(0.85)
+                      : Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color:
+                        (isDark ? Colors.white : Colors.black).withOpacity(0.1),
+                    width: 1,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildNavItem(context, Icons.home_rounded, l10n.home, '/'),
+                    _buildNavItem(context, Icons.settings_rounded, l10n.settings,
+                        '/settings'),
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
       ),
