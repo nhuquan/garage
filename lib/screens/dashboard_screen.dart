@@ -14,6 +14,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -90,23 +91,36 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  sliver: SliverGrid(
-                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 220,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 0.8,
-                    ),
+                if (isMobile)
+                  SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
-                        return _VehicleCard(vehicle: groupedVehicles[type]![index]);
+                        return _VehicleListItem(
+                            vehicle: groupedVehicles[type]![index]);
                       },
                       childCount: groupedVehicles[type]!.length,
                     ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 220,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        childAspectRatio: 0.8,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return _VehicleCard(
+                              vehicle: groupedVehicles[type]![index]);
+                        },
+                        childCount: groupedVehicles[type]!.length,
+                      ),
+                    ),
                   ),
-                ),
               ],
               const SliverToBoxAdapter(child: SizedBox(height: 100)),
             ],
@@ -266,6 +280,68 @@ class _VehicleCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _VehicleListItem extends StatelessWidget {
+  final Vehicle vehicle;
+
+  const _VehicleListItem({required this.vehicle});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: () => context.push('/vehicle_details/${vehicle.id}'),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+        child: GlassWidget(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              VehicleIconBadge(
+                vehicle: vehicle,
+                isDark: isDark,
+                size: 60,
+                iconSize: 30,
+                badgeSize: 16,
+                badgePadding: 4,
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      vehicle.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${vehicle.year} • ${vehicle.currentMileage.toInt()} km',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.white70 : Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: Colors.grey,
+              ),
+            ],
+          ),
         ),
       ),
     );

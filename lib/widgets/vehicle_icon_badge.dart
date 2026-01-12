@@ -25,7 +25,7 @@ class VehicleIconBadge extends StatelessWidget {
         return Colors.green;
       case 'motorcycle':
       case 'moto':
-        return Colors.deepOrange;
+        return Colors.blueAccent;
       case 'bicycle':
       case 'bike':
         return Colors.greenAccent;
@@ -39,8 +39,10 @@ class VehicleIconBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final typeColor = _getTypeColor(vehicle.type);
-    
+    final hasBrand = vehicle.brandLogo != null;
+
     return Stack(
+      clipBehavior: Clip.none,
       children: [
         Container(
           width: size,
@@ -67,20 +69,28 @@ class VehicleIconBadge extends StatelessWidget {
               ),
             ],
           ),
-          child: ShaderMask(
-            shaderCallback: (bounds) => LinearGradient(
-              colors: [typeColor, typeColor.withOpacity(0.7)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ).createShader(bounds),
-            child: Icon(
-              vehicle.vehicleIcon,
-              size: iconSize,
-              color: Colors.white,
-            ),
+          child: Center(
+            child: hasBrand
+                ? vehicle.brandLogo!.image(
+                    width: iconSize,
+                    height: iconSize,
+                    fit: BoxFit.contain,
+                  )
+                : ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      colors: [typeColor, typeColor.withOpacity(0.7)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ).createShader(bounds),
+                    child: Icon(
+                      vehicle.vehicleIcon,
+                      size: iconSize,
+                      color: Colors.white,
+                    ),
+                  ),
           ),
         ),
-        if (vehicle.brandLogo != null)
+        if (hasBrand)
           Positioned(
             bottom: 0,
             right: 0,
@@ -97,17 +107,10 @@ class VehicleIconBadge extends StatelessWidget {
                   ),
                 ],
               ),
-              child: vehicle.brandLogo!.image(
-                width: badgeSize,
-                height: badgeSize,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    Icons.store_rounded,
-                    size: badgeSize * 0.8,
-                    color: isDark ? Colors.white54 : Colors.black45,
-                  );
-                },
+              child: Icon(
+                vehicle.vehicleIcon,
+                size: badgeSize,
+                color: typeColor,
               ),
             ),
           ),
