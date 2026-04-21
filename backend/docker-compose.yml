@@ -1,46 +1,7 @@
 services:
   app:
     build: .
-    expose:
-      - "8080"
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: garage_db
-      DB_USER: garage_user
-      DB_PASSWORD: garage_password
-
-  db:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: garage_user
-      POSTGRES_PASSWORD: garage_password
-      POSTGRES_DB: garage_db
     ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U garage_user -d garage_db" ]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  caddy:
-    image: caddy:latest
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-
-volumes:
-  postgres_data:
-  caddy_data:
-  caddy_config:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://postgres:5eT00wQHOuM9hitdClFop03dnfJOJAMrVBWctIjKf4p2iHJ3K00zOXac5q6HvFZB@x4l8pqnxxspgx7gtoqmdxrs0:5432/postgres?sslmode=require
