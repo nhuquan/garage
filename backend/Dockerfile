@@ -28,11 +28,8 @@ COPY --from=build /app/build /app
 RUN dart pub get 
 
 # Set environment variables for the runtime
-ENV DB_HOST=db
-ENV DB_PORT=5432
-ENV DB_NAME=garage_db
-ENV DB_USER=garage_user
-ENV DB_PASSWORD=garage_password
+ENV DATABASE_URL=postgres://postgres:5eT00wQHOuM9hitdClFop03dnfJOJAMrVBWctIjKf4p2iHJ3K00zOXac5q6HvFZB@x4l8pqnxxspgx7gtoqmdxrs0:5432/postgres?sslmode=require
+
 
 # Start the server
 EXPOSE 8080
