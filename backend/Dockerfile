@@ -28,11 +28,11 @@ COPY --from=build /app/build /app
 RUN dart pub get 
 
 # Set environment variables for the runtime
-ENV DB_HOST=localhost
-ENV DB_PORT=5432
+ENV DB_HOST=103.77.215.155
+ENV DB_PORT=3000
 ENV DB_NAME=garage_db
 ENV DB_USER=postgres
-ENV DB_PASSWORD=5eT00wQHOuM9hitdClFop03dnfJOJAMrVBWctIjKf4p2iHJ3K00zOXac5q6HvFZB@x4l8pqnxxspgx7gtoqmdxrs0
+ENV DB_PASSWORD=5eT00wQHOuM9hitdClFop03dnfJOJAMrVBWctIjKf4p2iHJ3K00zOXac5q6HvFZB
 
 
 # Start the server
