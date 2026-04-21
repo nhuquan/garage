@@ -1,7 +1,0 @@
-services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      DATABASE_URL: postgres://postgres:5eT00wQHOuM9hitdClFop03dnfJOJAMrVBWctIjKf4p2iHJ3K00zOXac5q6HvFZB@x4l8pqnxxspgx7gtoqmdxrs0:5432/postgres?sslmode=require
