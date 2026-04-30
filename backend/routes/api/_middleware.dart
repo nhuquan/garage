@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:backend/db.dart';
 
 Handler middleware(Handler handler) {
   return (context) async {

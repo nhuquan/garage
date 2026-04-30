@@ -58,6 +58,19 @@ class ApiService {
     return (await _token) != null;
   }
 
+  Future<void> deleteAccount(String password) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/api/account'),
+      headers: await _headers(),
+      body: jsonEncode({'password': password}),
+    );
+    if (response.statusCode == 204) {
+      await logout();
+    } else {
+      throw Exception(jsonDecode(response.body)['error'] ?? 'Failed to delete account');
+    }
+  }
+
   // Vehicles
   Future<List<dynamic>> getVehicles() async {
     final response = await http.get(

@@ -40,5 +40,11 @@
   "coolant": "Súc két nước",
   "tire": "Thay/Đảo lốp",
   "filter": "Thay lọc gió/nhớt",
-  "other": "Khác"
+  "other": "Khác",
+  "dangerZone": "Khu vực nguy hiểm",
+  "deleteAccount": "Xóa tài khoản",
+  "deleteAccountTitle": "Xóa tài khoản?",
+  "deleteAccountWarning": "Hành động này không thể hoàn tác. Tất cả xe và bản ghi bảo trì sẽ bị xóa vĩnh viễn.",
+  "enterPassword": "Nhập mật khẩu để xác nhận",
+  "incorrectPassword": "Sai mật khẩu. Vui lòng thử lại."
 }

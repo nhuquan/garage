@@ -132,4 +132,23 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get other => 'Khác';
+
+  @override
+  String get dangerZone => 'Khu vực nguy hiểm';
+
+  @override
+  String get deleteAccount => 'Xóa tài khoản';
+
+  @override
+  String get deleteAccountTitle => 'Xóa tài khoản?';
+
+  @override
+  String get deleteAccountWarning =>
+      'Hành động này không thể hoàn tác. Tất cả xe và bản ghi bảo trì sẽ bị xóa vĩnh viễn.';
+
+  @override
+  String get enterPassword => 'Nhập mật khẩu để xác nhận';
+
+  @override
+  String get incorrectPassword => 'Sai mật khẩu. Vui lòng thử lại.';
 }

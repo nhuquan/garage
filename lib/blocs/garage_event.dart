@@ -32,6 +32,13 @@ class RegisterUser extends GarageEvent {
 
 class LogoutUser extends GarageEvent {}
 
+class DeleteAccount extends GarageEvent {
+  final String password;
+  const DeleteAccount(this.password);
+  @override
+  List<Object?> get props => [password];
+}
+
 class ChangeTheme extends GarageEvent {
   final ThemeMode themeMode;
   const ChangeTheme(this.themeMode);

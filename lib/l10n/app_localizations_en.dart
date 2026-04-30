@@ -132,4 +132,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get other => 'Other';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountTitle => 'Delete Account?';
+
+  @override
+  String get deleteAccountWarning =>
+      'This action cannot be undone. All your vehicles and maintenance records will be permanently removed.';
+
+  @override
+  String get enterPassword => 'Enter your password to confirm';
+
+  @override
+  String get incorrectPassword => 'Incorrect password. Please try again.';
 }

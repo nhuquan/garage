@@ -15,6 +15,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     on<LoginUser>(_onLoginUser);
     on<RegisterUser>(_onRegisterUser);
     on<LogoutUser>(_onLogoutUser);
+    on<DeleteAccount>(_onDeleteAccount);
     on<LoadGarage>(_onLoadGarage);
     on<AddVehicle>(_onAddVehicle);
     on<UpdateVehicle>(_onUpdateVehicle);
@@ -62,6 +63,15 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
   Future<void> _onLogoutUser(LogoutUser event, Emitter<GarageState> emit) async {
     await _apiService.logout();
     emit(const GarageState(status: GarageStatus.unauthenticated, isAuthenticated: false));
+  }
+
+  Future<void> _onDeleteAccount(DeleteAccount event, Emitter<GarageState> emit) async {
+    try {
+      await _apiService.deleteAccount(event.password);
+      emit(const GarageState(status: GarageStatus.unauthenticated, isAuthenticated: false));
+    } catch (e) {
+      emit(state.copyWith(status: GarageStatus.failure, errorMessage: e.toString()));
+    }
   }
 
   Future<void> _onInitSettings(InitSettings event, Emitter<GarageState> emit) async {
