@@ -13,15 +13,6 @@ Future<Response> onRequest(RequestContext context) async {
   final conn = await db.connection;
 
   try {
-    final body = await context.request.json() as Map<String, dynamic>;
-    final password = body['password'] as String?;
-
-    if (password == null || password.isEmpty) {
-      return Response.json(
-        statusCode: HttpStatus.badRequest,
-        body: {'error': 'Password is required'},
-      );
-    }
 
     final result = await conn.execute(
       'SELECT password_hash FROM users WHERE id = \u00241',
@@ -32,16 +23,6 @@ Future<Response> onRequest(RequestContext context) async {
       return Response.json(
         statusCode: HttpStatus.notFound,
         body: {'error': 'User not found'},
-      );
-    }
-
-    final row = result.first.toColumnMap();
-    final passwordHash = row['password_hash'] as String;
-
-    if (!BCrypt.checkpw(password, passwordHash)) {
-      return Response.json(
-        statusCode: HttpStatus.unauthorized,
-        body: {'error': 'Invalid credentials'},
       );
     }
 

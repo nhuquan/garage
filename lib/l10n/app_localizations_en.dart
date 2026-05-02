@@ -147,7 +147,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This action cannot be undone. All your vehicles and maintenance records will be permanently removed.';
 
   @override
-  String get enterPassword => 'Enter your password to confirm';
+  String get enterPassword => 'Type in: YES to confirm';
 
   @override
   String get incorrectPassword => 'Incorrect password. Please try again.';

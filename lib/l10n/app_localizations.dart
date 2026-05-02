@@ -371,7 +371,7 @@ abstract class AppLocalizations {
   /// No description provided for @enterPassword.
   ///
   /// In en, this message translates to:
-  /// **'Enter your password to confirm'**
+  /// **'Type in: YES to confirm'**
   String get enterPassword;
 
   /// No description provided for @incorrectPassword.

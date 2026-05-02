@@ -147,7 +147,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Hành động này không thể hoàn tác. Tất cả xe và bản ghi bảo trì sẽ bị xóa vĩnh viễn.';
 
   @override
-  String get enterPassword => 'Nhập mật khẩu để xác nhận';
+  String get enterPassword => 'Nhập YES để xác nhận';
 
   @override
   String get incorrectPassword => 'Sai mật khẩu. Vui lòng thử lại.';

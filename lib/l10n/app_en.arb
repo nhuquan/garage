@@ -52,6 +52,6 @@
   "deleteAccount": "Delete Account",
   "deleteAccountTitle": "Delete Account?",
   "deleteAccountWarning": "This action cannot be undone. All your vehicles and maintenance records will be permanently removed.",
-  "enterPassword": "Enter your password to confirm",
+  "enterPassword": "Type in: YES to confirm",
   "incorrectPassword": "Incorrect password. Please try again."
 }

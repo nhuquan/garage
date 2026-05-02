@@ -67,7 +67,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
 
   Future<void> _onDeleteAccount(DeleteAccount event, Emitter<GarageState> emit) async {
     try {
-      await _apiService.deleteAccount(event.password);
+      await _apiService.deleteAccount();
       emit(const GarageState(status: GarageStatus.unauthenticated, isAuthenticated: false));
     } catch (e) {
       emit(state.copyWith(status: GarageStatus.failure, errorMessage: e.toString()));

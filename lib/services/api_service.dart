@@ -58,11 +58,10 @@ class ApiService {
     return (await _token) != null;
   }
 
-  Future<void> deleteAccount(String password) async {
+  Future<void> deleteAccount() async {
     final response = await http.delete(
       Uri.parse('$baseUrl/api/account'),
       headers: await _headers(),
-      body: jsonEncode({'password': password}),
     );
     if (response.statusCode == 204) {
       await logout();
