@@ -28,6 +28,13 @@ class ChangeLocale extends GarageEvent {
 
 class InitSettings extends GarageEvent {}
 
+class ChangeMaintenanceInterval extends GarageEvent {
+  final int months;
+  const ChangeMaintenanceInterval(this.months);
+  @override
+  List<Object?> get props => [months];
+}
+
 // Vehicle Events
 class AddVehicle extends GarageEvent {
   final Vehicle vehicle;

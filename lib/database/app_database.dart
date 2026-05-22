@@ -16,6 +16,8 @@ class Vehicles extends Table {
   IntColumn get year => integer()();
   RealColumn get currentKm => real()();
   TextColumn get description => text().withDefault(const Constant('value'))();
+  // null means "use global setting from SharedPreferences"
+  IntColumn get maintenanceIntervalMonths => integer().nullable()();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -35,11 +37,21 @@ class MaintenanceItems extends Table {
 }
 
 @DriftDatabase(tables: [Vehicles, MaintenanceItems])
-class AppDatabase extends _$AppDatabase{
-  AppDatabase() : super (_openConnection());
+class AppDatabase extends _$AppDatabase {
+  AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            // Add per-vehicle maintenance interval override column
+            await m.addColumn(vehicles, vehicles.maintenanceIntervalMonths);
+          }
+        },
+      );
 
   static QueryExecutor _openConnection() {
     return LazyDatabase(() async {
@@ -48,6 +60,5 @@ class AppDatabase extends _$AppDatabase{
       return NativeDatabase(file);
     });
   }
-
 }
 

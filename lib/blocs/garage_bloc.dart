@@ -20,17 +20,30 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
     on<ChangeTheme>(_onChangeTheme);
     on<ChangeLocale>(_onChangeLocale);
     on<InitSettings>(_onInitSettings);
+    on<ChangeMaintenanceInterval>(_onChangeMaintenanceInterval);
   }
 
   Future<void> _onInitSettings(InitSettings event, Emitter<GarageState> emit) async {
     final prefs = await SharedPreferences.getInstance();
     final themeStr = prefs.getString('themeMode') ?? 'light';
     final localeStr = prefs.getString('locale') ?? 'en';
+    final intervalMonths = prefs.getInt('maintenanceIntervalMonths') ?? 6;
 
     emit(state.copyWith(
       themeMode: themeStr == 'dark' ? ThemeMode.dark : ThemeMode.light,
       locale: Locale(localeStr),
+      maintenanceIntervalMonths: intervalMonths,
     ));
+  }
+
+  Future<void> _onChangeMaintenanceInterval(
+    ChangeMaintenanceInterval event,
+    Emitter<GarageState> emit,
+  ) async {
+    final months = event.months.clamp(1, 60);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('maintenanceIntervalMonths', months);
+    emit(state.copyWith(maintenanceIntervalMonths: months));
   }
 
   Future<void> _onChangeTheme(ChangeTheme event, Emitter<GarageState> emit) async {

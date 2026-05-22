@@ -8,6 +8,91 @@ import '../database/app_database.dart';
 import '../widgets/glass_widget.dart';
 import '../widgets/vehicle_icon_badge.dart';
 
+/// Days until next service. Positive = upcoming, negative = overdue, null = no records.
+int? _daysUntilService(
+  Vehicle vehicle,
+  List<MaintenanceItem> allRecords,
+  int globalIntervalMonths,
+) {
+  final records = allRecords.where((r) => r.vehicleId == vehicle.id).toList();
+  if (records.isEmpty) return null;
+
+  final latest = records.reduce((a, b) => a.date.isAfter(b.date) ? a : b);
+  final interval = vehicle.maintenanceIntervalMonths ?? globalIntervalMonths;
+
+  final nextDate = DateTime(
+    latest.date.year,
+    latest.date.month + interval,
+    latest.date.day,
+  );
+  final today = DateTime.now();
+  return nextDate
+      .difference(DateTime(today.year, today.month, today.day))
+      .inDays;
+}
+
+/// Compact badge showing days remaining / overdue for next maintenance.
+class _MaintenanceBadge extends StatelessWidget {
+  final Vehicle vehicle;
+
+  const _MaintenanceBadge({required this.vehicle});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<GarageBloc, GarageState>(
+      builder: (context, state) {
+        final days = _daysUntilService(
+          vehicle,
+          state.maintenanceRecords,
+          state.maintenanceIntervalMonths,
+        );
+
+        if (days == null) {
+          // No maintenance on record yet
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.build_outlined, size: 16, color: Colors.grey),
+          );
+        }
+
+        final Color color;
+        final String label;
+
+        if (days >= 20) {
+          color = Colors.green;
+          label = '+${days}d';
+        } else if (days >= 0) {
+          color = Colors.orange;
+          label = '${days}d';
+        } else {
+          color = Colors.redAccent;
+          label = '${days}d';
+        }
+
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
@@ -279,6 +364,8 @@ class _VehicleCard extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 6),
+            _MaintenanceBadge(vehicle: vehicle),
           ],
         ),
       ),
@@ -336,10 +423,7 @@ class _VehicleListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right_rounded,
-                color: Colors.grey,
-              ),
+              _MaintenanceBadge(vehicle: vehicle),
             ],
           ),
         ),

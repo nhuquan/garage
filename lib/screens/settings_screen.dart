@@ -89,6 +89,118 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                _buildSectionTitle(
+                  l10n.localeName == 'vi' ? 'Bảo dưỡng' : 'Maintenance',
+                ),
+                _buildSettingCard(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.build_rounded, color: Colors.blueAccent, size: 22),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.localeName == 'vi'
+                                        ? 'Chu kỳ bảo dưỡng mặc định'
+                                        : 'Default service interval',
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    l10n.localeName == 'vi'
+                                        ? 'Áp dụng cho tất cả xe (có thể ghi đè cho từng xe)'
+                                        : 'Applies to all vehicles — can override per vehicle',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.blueAccent.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                l10n.localeName == 'vi'
+                                    ? '${state.maintenanceIntervalMonths} tháng'
+                                    : '${state.maintenanceIntervalMonths} months',
+                                style: const TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            trackHeight: 3,
+                            activeTrackColor: Colors.blueAccent,
+                            inactiveTrackColor: Colors.blueAccent.withOpacity(0.2),
+                            thumbColor: Colors.blueAccent,
+                            overlayColor: Colors.blueAccent.withOpacity(0.1),
+                            valueIndicatorColor: Colors.blueAccent,
+                            showValueIndicator: ShowValueIndicator.always,
+                            valueIndicatorTextStyle:
+                                const TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                          child: Slider(
+                            value: state.maintenanceIntervalMonths
+                                .clamp(3, 9)
+                                .toDouble(),
+                            min: 3,
+                            max: 9,
+                            divisions: 6,
+                            label: l10n.localeName == 'vi'
+                                ? '${state.maintenanceIntervalMonths} tháng'
+                                : '${state.maintenanceIntervalMonths} months',
+                            onChanged: (value) {
+                              context.read<GarageBloc>().add(
+                                    ChangeMaintenanceInterval(value.round()),
+                                  );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4, bottom: 4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                l10n.localeName == 'vi' ? '3 tháng' : '3 months',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              Text(
+                                l10n.localeName == 'vi' ? '9 tháng' : '9 months',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 40),
               ],
             ),

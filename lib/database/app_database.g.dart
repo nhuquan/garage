@@ -67,6 +67,17 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
     requiredDuringInsert: false,
     defaultValue: const Constant('value'),
   );
+  static const VerificationMeta _maintenanceIntervalMonthsMeta =
+      const VerificationMeta('maintenanceIntervalMonths');
+  @override
+  late final GeneratedColumn<int> maintenanceIntervalMonths =
+      GeneratedColumn<int>(
+        'maintenance_interval_months',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -75,6 +86,7 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
     year,
     currentKm,
     description,
+    maintenanceIntervalMonths,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -134,6 +146,15 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         ),
       );
     }
+    if (data.containsKey('maintenance_interval_months')) {
+      context.handle(
+        _maintenanceIntervalMonthsMeta,
+        maintenanceIntervalMonths.isAcceptableOrUnknown(
+          data['maintenance_interval_months']!,
+          _maintenanceIntervalMonthsMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -167,6 +188,10 @@ class $VehiclesTable extends Vehicles with TableInfo<$VehiclesTable, Vehicle> {
         DriftSqlType.string,
         data['${effectivePrefix}description'],
       )!,
+      maintenanceIntervalMonths: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}maintenance_interval_months'],
+      ),
     );
   }
 
@@ -183,6 +208,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
   final int year;
   final double currentKm;
   final String description;
+  final int? maintenanceIntervalMonths;
   const Vehicle({
     required this.id,
     required this.name,
@@ -190,6 +216,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     required this.year,
     required this.currentKm,
     required this.description,
+    this.maintenanceIntervalMonths,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -200,6 +227,11 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     map['year'] = Variable<int>(year);
     map['current_km'] = Variable<double>(currentKm);
     map['description'] = Variable<String>(description);
+    if (!nullToAbsent || maintenanceIntervalMonths != null) {
+      map['maintenance_interval_months'] = Variable<int>(
+        maintenanceIntervalMonths,
+      );
+    }
     return map;
   }
 
@@ -211,6 +243,10 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       year: Value(year),
       currentKm: Value(currentKm),
       description: Value(description),
+      maintenanceIntervalMonths:
+          maintenanceIntervalMonths == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maintenanceIntervalMonths),
     );
   }
 
@@ -226,6 +262,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       year: serializer.fromJson<int>(json['year']),
       currentKm: serializer.fromJson<double>(json['currentKm']),
       description: serializer.fromJson<String>(json['description']),
+      maintenanceIntervalMonths: serializer.fromJson<int?>(
+        json['maintenanceIntervalMonths'],
+      ),
     );
   }
   @override
@@ -238,6 +277,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       'year': serializer.toJson<int>(year),
       'currentKm': serializer.toJson<double>(currentKm),
       'description': serializer.toJson<String>(description),
+      'maintenanceIntervalMonths': serializer.toJson<int?>(
+        maintenanceIntervalMonths,
+      ),
     };
   }
 
@@ -248,6 +290,7 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     int? year,
     double? currentKm,
     String? description,
+    Value<int?> maintenanceIntervalMonths = const Value.absent(),
   }) => Vehicle(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -255,6 +298,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
     year: year ?? this.year,
     currentKm: currentKm ?? this.currentKm,
     description: description ?? this.description,
+    maintenanceIntervalMonths: maintenanceIntervalMonths.present
+        ? maintenanceIntervalMonths.value
+        : this.maintenanceIntervalMonths,
   );
   Vehicle copyWithCompanion(VehiclesCompanion data) {
     return Vehicle(
@@ -266,6 +312,9 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
       description: data.description.present
           ? data.description.value
           : this.description,
+      maintenanceIntervalMonths: data.maintenanceIntervalMonths.present
+          ? data.maintenanceIntervalMonths.value
+          : this.maintenanceIntervalMonths,
     );
   }
 
@@ -277,13 +326,22 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           ..write('type: $type, ')
           ..write('year: $year, ')
           ..write('currentKm: $currentKm, ')
-          ..write('description: $description')
+          ..write('description: $description, ')
+          ..write('maintenanceIntervalMonths: $maintenanceIntervalMonths')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, type, year, currentKm, description);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    type,
+    year,
+    currentKm,
+    description,
+    maintenanceIntervalMonths,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -293,7 +351,8 @@ class Vehicle extends DataClass implements Insertable<Vehicle> {
           other.type == this.type &&
           other.year == this.year &&
           other.currentKm == this.currentKm &&
-          other.description == this.description);
+          other.description == this.description &&
+          other.maintenanceIntervalMonths == this.maintenanceIntervalMonths);
 }
 
 class VehiclesCompanion extends UpdateCompanion<Vehicle> {
@@ -303,6 +362,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
   final Value<int> year;
   final Value<double> currentKm;
   final Value<String> description;
+  final Value<int?> maintenanceIntervalMonths;
   final Value<int> rowid;
   const VehiclesCompanion({
     this.id = const Value.absent(),
@@ -311,6 +371,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     this.year = const Value.absent(),
     this.currentKm = const Value.absent(),
     this.description = const Value.absent(),
+    this.maintenanceIntervalMonths = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   VehiclesCompanion.insert({
@@ -320,6 +381,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     required int year,
     required double currentKm,
     this.description = const Value.absent(),
+    this.maintenanceIntervalMonths = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        name = Value(name),
@@ -333,6 +395,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Expression<int>? year,
     Expression<double>? currentKm,
     Expression<String>? description,
+    Expression<int>? maintenanceIntervalMonths,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -342,6 +405,8 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       if (year != null) 'year': year,
       if (currentKm != null) 'current_km': currentKm,
       if (description != null) 'description': description,
+      if (maintenanceIntervalMonths != null)
+        'maintenance_interval_months': maintenanceIntervalMonths,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -353,6 +418,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     Value<int>? year,
     Value<double>? currentKm,
     Value<String>? description,
+    Value<int?>? maintenanceIntervalMonths,
     Value<int>? rowid,
   }) {
     return VehiclesCompanion(
@@ -362,6 +428,8 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
       year: year ?? this.year,
       currentKm: currentKm ?? this.currentKm,
       description: description ?? this.description,
+      maintenanceIntervalMonths:
+          maintenanceIntervalMonths ?? this.maintenanceIntervalMonths,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -387,6 +455,11 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
     if (description.present) {
       map['description'] = Variable<String>(description.value);
     }
+    if (maintenanceIntervalMonths.present) {
+      map['maintenance_interval_months'] = Variable<int>(
+        maintenanceIntervalMonths.value,
+      );
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -402,6 +475,7 @@ class VehiclesCompanion extends UpdateCompanion<Vehicle> {
           ..write('year: $year, ')
           ..write('currentKm: $currentKm, ')
           ..write('description: $description, ')
+          ..write('maintenanceIntervalMonths: $maintenanceIntervalMonths, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -846,6 +920,7 @@ typedef $$VehiclesTableCreateCompanionBuilder =
       required int year,
       required double currentKm,
       Value<String> description,
+      Value<int?> maintenanceIntervalMonths,
       Value<int> rowid,
     });
 typedef $$VehiclesTableUpdateCompanionBuilder =
@@ -856,6 +931,7 @@ typedef $$VehiclesTableUpdateCompanionBuilder =
       Value<int> year,
       Value<double> currentKm,
       Value<String> description,
+      Value<int?> maintenanceIntervalMonths,
       Value<int> rowid,
     });
 
@@ -926,6 +1002,11 @@ class $$VehiclesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get maintenanceIntervalMonths => $composableBuilder(
+    column: $table.maintenanceIntervalMonths,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> maintenanceItemsRefs(
     Expression<bool> Function($$MaintenanceItemsTableFilterComposer f) f,
   ) {
@@ -990,6 +1071,11 @@ class $$VehiclesTableOrderingComposer
     column: $table.description,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get maintenanceIntervalMonths => $composableBuilder(
+    column: $table.maintenanceIntervalMonths,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$VehiclesTableAnnotationComposer
@@ -1018,6 +1104,11 @@ class $$VehiclesTableAnnotationComposer
 
   GeneratedColumn<String> get description => $composableBuilder(
     column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maintenanceIntervalMonths => $composableBuilder(
+    column: $table.maintenanceIntervalMonths,
     builder: (column) => column,
   );
 
@@ -1081,6 +1172,7 @@ class $$VehiclesTableTableManager
                 Value<int> year = const Value.absent(),
                 Value<double> currentKm = const Value.absent(),
                 Value<String> description = const Value.absent(),
+                Value<int?> maintenanceIntervalMonths = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VehiclesCompanion(
                 id: id,
@@ -1089,6 +1181,7 @@ class $$VehiclesTableTableManager
                 year: year,
                 currentKm: currentKm,
                 description: description,
+                maintenanceIntervalMonths: maintenanceIntervalMonths,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -1099,6 +1192,7 @@ class $$VehiclesTableTableManager
                 required int year,
                 required double currentKm,
                 Value<String> description = const Value.absent(),
+                Value<int?> maintenanceIntervalMonths = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => VehiclesCompanion.insert(
                 id: id,
@@ -1107,6 +1201,7 @@ class $$VehiclesTableTableManager
                 year: year,
                 currentKm: currentKm,
                 description: description,
+                maintenanceIntervalMonths: maintenanceIntervalMonths,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

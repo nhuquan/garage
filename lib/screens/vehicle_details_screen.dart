@@ -20,7 +20,6 @@ class VehicleDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currencyFormat = NumberFormat.simpleCurrency(locale: l10n.localeName);
 
     return BlocBuilder<GarageBloc, GarageState>(
       builder: (context, state) {

@@ -15,6 +15,8 @@ class GarageState extends Equatable {
   final ThemeMode themeMode;
   final Locale locale;
   final String? username;
+  /// Global default maintenance interval in months (editable in Settings).
+  final int maintenanceIntervalMonths;
 
   const GarageState({
     this.status = GarageStatus.initial,
@@ -25,6 +27,7 @@ class GarageState extends Equatable {
     this.themeMode = ThemeMode.light,
     this.locale = const Locale('en'),
     this.username,
+    this.maintenanceIntervalMonths = 6,
   });
 
   GarageState copyWith({
@@ -36,6 +39,7 @@ class GarageState extends Equatable {
     ThemeMode? themeMode,
     Locale? locale,
     String? username,
+    int? maintenanceIntervalMonths,
   }) {
     return GarageState(
       status: status ?? this.status,
@@ -46,6 +50,8 @@ class GarageState extends Equatable {
       themeMode: themeMode ?? this.themeMode,
       locale: locale ?? this.locale,
       username: username ?? this.username,
+      maintenanceIntervalMonths:
+          maintenanceIntervalMonths ?? this.maintenanceIntervalMonths,
     );
   }
 
@@ -59,5 +65,6 @@ class GarageState extends Equatable {
         themeMode,
         locale,
         username,
+        maintenanceIntervalMonths,
       ];
 }

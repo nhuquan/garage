@@ -32,6 +32,7 @@ class StorageService {
             year: r.year,
             currentKm: r.currentKm,
             description: r.description,
+            maintenanceIntervalMonths: r.maintenanceIntervalMonths,
           ),
         )
         .toList();
@@ -48,6 +49,7 @@ class StorageService {
             year: Value(v.year),
             currentKm: Value(v.currentKm),
             description: Value(v.description),
+            maintenanceIntervalMonths: Value(v.maintenanceIntervalMonths),
           ),
         );
   }
