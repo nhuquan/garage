@@ -5,7 +5,6 @@ import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../blocs/garage_state.dart';
 import '../build_context_ext.dart';
-import '../l10n/app_localizations.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,7 +14,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -42,8 +40,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             body: ListView(
               padding: const EdgeInsets.all(20),
               children: [
-                _buildUserGreeting(context, state, l10n),
-                const SizedBox(height: 30),
                 _buildSectionTitle(l10n.appearance),
                 _buildSettingCard(
                   child: ListTile(
@@ -94,186 +90,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                _logoutButton(context, l10n),
-
-                const SizedBox(height: 20),
-                _dangerZone(context, l10n),
               ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  ElevatedButton _logoutButton(BuildContext context, AppLocalizations l10n) {
-    return ElevatedButton.icon(
-                onPressed: () => context.read<GarageBloc>().add(LogoutUser()),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent.withOpacity(0.2),
-                  foregroundColor: Colors.redAccent,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  elevation: 0,
-                ),
-                icon: const Icon(Icons.logout_rounded),
-                label: Text(
-                  l10n.logout,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              );
-  }
-
-  Widget _dangerZone(BuildContext context, AppLocalizations l10n) {
-    return ExpansionTile(
-      title: Text('Danger zone'),
-      expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
-      children:[ 
-        ElevatedButton.icon(
-        onPressed: () => _confirmDeleteAccount(context, l10n),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.redAccent.withOpacity(0.2),
-          foregroundColor: Colors.redAccent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          elevation: 0,
-        ),
-        icon: const Icon(Icons.delete_forever_rounded),
-        label: Text(
-          l10n.deleteAccount,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-              ),]
-    );
-  }
-
-  void _confirmDeleteAccount(BuildContext context, AppLocalizations l10n) {
-    final passwordController = TextEditingController();
-    String? passwordError;
-    bool isDeleting = false;
-
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) {
-            return AlertDialog(
-              title: Text(l10n.deleteAccountTitle),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.deleteAccountWarning,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.color?.withOpacity(0.8),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.enterPassword,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: passwordController,
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: isDeleting ? null : () => Navigator.pop(ctx),
-                  child: Text(l10n.localeName == 'vi' ? 'Hủy' : 'Cancel'),
-                ),
-                FilledButton(
-                  onPressed: () async {
-                    if (passwordController.text != "YES") {
-                      Navigator.pop(ctx);
-                      return;
-                    }
-
-
-                    debugPrint('Deleting account');
-                    try {
-                      context.read<GarageBloc>().add(
-                        DeleteAccount(passwordController.text),
-                      );
-                      Navigator.pop(ctx);
-                    } catch (e) {
-                      setDialogState(() {
-                        isDeleting = false;
-                        passwordError = l10n.incorrectPassword;
-                      });
-                    }
-                  },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Colors.redAccent,
-                  ),
-                  child: Text(l10n.delete),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildUserGreeting(
-    BuildContext context,
-    GarageState state,
-    AppLocalizations l10n,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.blueAccent.withOpacity(0.2),
-            child: const Icon(
-              Icons.person_rounded,
-              size: 30,
-              color: Colors.blueAccent,
-            ),
-          ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.greeting(state.username ?? 'User'),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Garage Member',
-                  style: TextStyle(
-                    color: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.color?.withOpacity(0.6),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

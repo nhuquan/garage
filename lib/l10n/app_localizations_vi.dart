@@ -12,36 +12,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get appearance => 'Giao diện';
 
   @override
-  String get appTitle => 'Garage';
+  String get appTitle => 'XeCare';
 
   @override
-  String get home => 'Trang chủ';
+  String get home => 'Gara';
 
   @override
   String get history => 'Lịch sử';
 
   @override
   String get settings => 'Cài đặt';
-
-  @override
-  String get logout => 'Đăng xuất';
-
-  @override
-  String greeting(String username) {
-    return 'Xin chào, $username';
-  }
-
-  @override
-  String get login => 'Đăng nhập';
-
-  @override
-  String get register => 'Đăng ký';
-
-  @override
-  String get username => 'Tên đăng nhập';
-
-  @override
-  String get password => 'Mật khẩu';
 
   @override
   String get darkTheme => 'Chế độ tối';
@@ -80,13 +60,13 @@ class AppLocalizationsVi extends AppLocalizations {
   String get delete => 'Xóa';
 
   @override
-  String get maintenanceHistory => 'Lịch sử bảo trì';
+  String get maintenanceHistory => 'Lịch sử bảo dưỡng';
 
   @override
-  String get addRecord => 'Thêm bản ghi';
+  String get addRecord => 'Bảo dưỡng xe';
 
   @override
-  String get editRecord => 'Sửa bản ghi';
+  String get editRecord => 'Bảo dưỡng xe';
 
   @override
   String get title => 'Tiêu đề';
@@ -98,7 +78,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cost => 'Chi phí';
 
   @override
-  String get mileageAtService => 'Số km khi bảo trì';
+  String get mileageAtService => 'Số km khi bảo dưỡng';
 
   @override
   String get notes => 'Ghi chú';
@@ -107,48 +87,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get optional => '(Tùy chọn)';
 
   @override
-  String get noVehicles => 'Không tìm thấy xe nào. Hãy thêm mới!';
+  String get noVehicles => 'Bắt đầu thêm một xe';
 
   @override
-  String get noMaintenance => 'Không có bản ghi bảo trì nào.';
-
-  @override
-  String get serviceType => 'Loại dịch vụ';
-
-  @override
-  String get oil => 'Thay nhớt';
-
-  @override
-  String get brake => 'Bảo trì phanh';
-
-  @override
-  String get coolant => 'Súc két nước';
-
-  @override
-  String get tire => 'Thay/Đảo lốp';
-
-  @override
-  String get filter => 'Thay lọc gió/nhớt';
-
-  @override
-  String get other => 'Khác';
-
-  @override
-  String get dangerZone => 'Khu vực nguy hiểm';
-
-  @override
-  String get deleteAccount => 'Xóa tài khoản';
-
-  @override
-  String get deleteAccountTitle => 'Xóa tài khoản?';
-
-  @override
-  String get deleteAccountWarning =>
-      'Hành động này không thể hoàn tác. Tất cả xe và bản ghi bảo trì sẽ bị xóa vĩnh viễn.';
-
-  @override
-  String get enterPassword => 'Nhập YES để xác nhận';
-
-  @override
-  String get incorrectPassword => 'Sai mật khẩu. Vui lòng thử lại.';
+  String get noMaintenance => 'Chưa bảo dưỡng lần nào';
 }

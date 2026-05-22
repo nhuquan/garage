@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Garage'**
+  /// **'XeCare'**
   String get appTitle;
 
   /// No description provided for @home.
@@ -127,42 +127,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
-
-  /// No description provided for @logout.
-  ///
-  /// In en, this message translates to:
-  /// **'Logout'**
-  String get logout;
-
-  /// No description provided for @greeting.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello, {username}'**
-  String greeting(String username);
-
-  /// No description provided for @login.
-  ///
-  /// In en, this message translates to:
-  /// **'Login'**
-  String get login;
-
-  /// No description provided for @register.
-  ///
-  /// In en, this message translates to:
-  /// **'Register'**
-  String get register;
-
-  /// No description provided for @username.
-  ///
-  /// In en, this message translates to:
-  /// **'Username'**
-  String get username;
-
-  /// No description provided for @password.
-  ///
-  /// In en, this message translates to:
-  /// **'Password'**
-  String get password;
 
   /// No description provided for @darkTheme.
   ///
@@ -245,13 +209,13 @@ abstract class AppLocalizations {
   /// No description provided for @addRecord.
   ///
   /// In en, this message translates to:
-  /// **'Add Record'**
+  /// **'Maintenance record'**
   String get addRecord;
 
   /// No description provided for @editRecord.
   ///
   /// In en, this message translates to:
-  /// **'Edit Record'**
+  /// **'Maintenance record'**
   String get editRecord;
 
   /// No description provided for @title.
@@ -301,84 +265,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No maintenance records found.'**
   String get noMaintenance;
-
-  /// No description provided for @serviceType.
-  ///
-  /// In en, this message translates to:
-  /// **'Service Type'**
-  String get serviceType;
-
-  /// No description provided for @oil.
-  ///
-  /// In en, this message translates to:
-  /// **'Oil Change'**
-  String get oil;
-
-  /// No description provided for @brake.
-  ///
-  /// In en, this message translates to:
-  /// **'Brake Service'**
-  String get brake;
-
-  /// No description provided for @coolant.
-  ///
-  /// In en, this message translates to:
-  /// **'Coolant Flush'**
-  String get coolant;
-
-  /// No description provided for @tire.
-  ///
-  /// In en, this message translates to:
-  /// **'Tire Rotation/Change'**
-  String get tire;
-
-  /// No description provided for @filter.
-  ///
-  /// In en, this message translates to:
-  /// **'Filter Replacement'**
-  String get filter;
-
-  /// No description provided for @other.
-  ///
-  /// In en, this message translates to:
-  /// **'Other'**
-  String get other;
-
-  /// No description provided for @dangerZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Danger Zone'**
-  String get dangerZone;
-
-  /// No description provided for @deleteAccount.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Account'**
-  String get deleteAccount;
-
-  /// No description provided for @deleteAccountTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete Account?'**
-  String get deleteAccountTitle;
-
-  /// No description provided for @deleteAccountWarning.
-  ///
-  /// In en, this message translates to:
-  /// **'This action cannot be undone. All your vehicles and maintenance records will be permanently removed.'**
-  String get deleteAccountWarning;
-
-  /// No description provided for @enterPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Type in: YES to confirm'**
-  String get enterPassword;
-
-  /// No description provided for @incorrectPassword.
-  ///
-  /// In en, this message translates to:
-  /// **'Incorrect password. Please try again.'**
-  String get incorrectPassword;
 }
 
 class _AppLocalizationsDelegate

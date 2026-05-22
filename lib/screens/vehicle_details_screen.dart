@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
 import '../blocs/garage_state.dart';
+import '../database/app_database.dart';
 import '../l10n/app_localizations.dart';
 import '../widgets/glass_widget.dart';
-import '../models/vehicle.dart';
 import '../widgets/vehicle_icon_badge.dart';
 
 class VehicleDetailsScreen extends StatelessWidget {
@@ -130,14 +130,6 @@ class VehicleDetailsScreen extends StatelessWidget {
                                   return ListTile(
                                     onTap: () => context.push('/edit_maintenance', extra: record),
                                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                    leading: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.blueAccent.withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: record.type.icon,
-                                    ),
                                     title: Text(
                                       record.title,
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
@@ -150,17 +142,8 @@ class VehicleDetailsScreen extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
-                                        if (record.cost > 0)
-                                          Text(
-                                            currencyFormat.format(record.cost),
-                                            style: const TextStyle(
-                                              color: Colors.green,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
                                         Text(
-                                          '${record.mileageAtService.toInt()} km',
+                                          '${record.kmAtService.toInt()} km',
                                           style: TextStyle(fontSize: 10, color: isDark ? Colors.white38 : Colors.black38),
                                         ),
                                       ],

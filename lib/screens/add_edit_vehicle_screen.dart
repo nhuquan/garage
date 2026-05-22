@@ -5,8 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
-import '../models/vehicle.dart';
-import '../widgets/glass_widget.dart';
+import '../database/app_database.dart';
 
 class AddEditVehicleScreen extends StatefulWidget {
   final Vehicle? vehicle;
@@ -66,7 +65,7 @@ class _AddEditVehicleScreenState extends State<AddEditVehicleScreen> {
           name: name,
           type: _selectedType,
           year: year,
-          currentMileage: 0,
+          currentKm: 0,
           description: _descriptionController.text,
         );
         context.read<GarageBloc>().add(AddVehicle(newVehicle));

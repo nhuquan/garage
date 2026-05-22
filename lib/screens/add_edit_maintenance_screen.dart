@@ -6,9 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_event.dart';
-import '../models/maintenance_item.dart';
-import '../models/maintenance_type.dart';
-import '../widgets/glass_widget.dart';
+import '../database/app_database.dart';
 
 class AddEditMaintenanceScreen extends StatefulWidget {
   final String vehicleId;
@@ -23,29 +21,22 @@ class AddEditMaintenanceScreen extends StatefulWidget {
 class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
-  late TextEditingController _costController;
   late TextEditingController _mileageController;
   late TextEditingController _notesController;
   late DateTime _selectedDate;
-  late MaintenanceType _selectedType;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.item?.title ?? '');
-    _costController = TextEditingController(
-      text: widget.item != null && widget.item!.cost > 0 ? widget.item!.cost.toString() : '',
-    );
-    _mileageController = TextEditingController(text: widget.item?.mileageAtService.toString() ?? '');
+    _mileageController = TextEditingController(text: widget.item?.kmAtService.toString() ?? '');
     _notesController = TextEditingController(text: widget.item?.notes ?? '');
     _selectedDate = widget.item?.date ?? DateTime.now();
-    _selectedType = widget.item?.type ?? MaintenanceType.other;
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _costController.dispose();
     _mileageController.dispose();
     _notesController.dispose();
     super.dispose();
@@ -66,7 +57,6 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
   void _saveItem() {
     if (_formKey.currentState!.validate()) {
       final title = _titleController.text;
-      final cost = double.tryParse(_costController.text) ?? 0.0;
       final mileage = double.parse(_mileageController.text);
       final notes = _notesController.text;
 
@@ -74,11 +64,8 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
         id: widget.item?.id ?? const Uuid().v4(),
         vehicleId: widget.vehicleId,
         title: title,
-        type: _selectedType,
         date: _selectedDate,
-        cost: cost,
-        mileageAtService: mileage,
-        notes: notes,
+        notes: notes, kmAtService: mileage,
       );
 
       if (widget.item == null) {
@@ -94,7 +81,6 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final currencySymbol = NumberFormat.simpleCurrency(locale: l10n?.localeName).currencySymbol;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -118,33 +104,6 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
                   ),
                   validator: (value) => value == null || value.isEmpty ? 'Required' : null,
               ),
-              const SizedBox(height: 20),
-               DropdownButtonFormField<MaintenanceType>(
-                  value: _selectedType,
-                  decoration: _buildInputDecoration(
-                    l10n.serviceType,
-                    _selectedType.icon,
-                    isDark,
-                  ),
-                  dropdownColor: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-                  items: MaintenanceType.values.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Text(type.localizedName(l10n)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedType = value;
-                        if (_titleController.text.isEmpty || 
-                            MaintenanceType.values.any((e) => e.localizedName(l10n) == _titleController.text)) {
-                          _titleController.text = value.localizedName(l10n);
-                        }
-                      });
-                    }
-                  },
-                ),
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: _pickDate,
@@ -181,18 +140,6 @@ class _AddEditMaintenanceScreenState extends State<AddEditMaintenanceScreen> {
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Expanded(
-                    child:  TextFormField(
-                        controller: _costController,
-                        keyboardType: TextInputType.number,
-                        decoration: _buildInputDecoration(
-                          '${l10n.cost} ($currencySymbol) ${l10n.optional}',
-                          Icon(Icons.payments_rounded),
-                          isDark,
-                        ),
-                    ),
-                  ),
-                  const SizedBox(width: 20),
                   Expanded(
                     child:  TextFormField(
                         controller: _mileageController,

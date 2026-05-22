@@ -4,8 +4,8 @@ import 'package:garage/build_context_ext.dart';
 import 'package:go_router/go_router.dart';
 import '../blocs/garage_bloc.dart';
 import '../blocs/garage_state.dart';
+import '../database/app_database.dart';
 import '../widgets/glass_widget.dart';
-import '../models/vehicle.dart';
 import '../widgets/vehicle_icon_badge.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -269,7 +269,7 @@ class _VehicleCard extends StatelessWidget {
                   const Icon(Icons.speed_rounded, size: 14, color: Colors.blueAccent),
                   const SizedBox(width: 6),
                   Text(
-                    '${vehicle.currentMileage.toInt()} km',
+                    '${vehicle.currentKm.toInt()} km',
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -327,7 +327,7 @@ class _VehicleListItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${vehicle.year} • ${vehicle.currentMileage.toInt()} km',
+                      '${vehicle.year} • ${vehicle.currentKm.toInt()} km',
                       style: TextStyle(
                         fontSize: 14,
                         color: isDark ? Colors.white70 : Colors.black54,

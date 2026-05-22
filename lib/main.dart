@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:garage/services/storage_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -8,14 +9,12 @@ import 'blocs/garage_bloc.dart';
 import 'blocs/garage_event.dart';
 import 'blocs/garage_state.dart';
 import 'build_context_ext.dart';
+import 'database/app_database.dart';
 import 'l10n/app_localizations.dart';
-import 'models/maintenance_item.dart';
-import 'models/vehicle.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/add_edit_vehicle_screen.dart';
 import 'screens/vehicle_details_screen.dart';
 import 'screens/add_edit_maintenance_screen.dart';
-import 'screens/login_screen.dart';
 import 'screens/settings_screen.dart';
 import 'theme/garage_theme.dart';
 import 'widgets/garage_background.dart';
@@ -97,33 +96,17 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _garageBloc = GarageBloc()
+    final db = AppDatabase();
+    final storageService = StorageService(db);
+    _garageBloc = GarageBloc(storageService)
       ..add(InitSettings())
-      ..add(CheckAuth());
+      ..add(LoadGarage());
 
     _router = GoRouter(
       navigatorKey: _rootNavigatorKey,
       initialLocation: '/',
       refreshListenable: GoRouterRefreshStream(_garageBloc.stream),
-      redirect: (context, state) {
-        final garageState = _garageBloc.state;
-        final bool loggingIn = state.matchedLocation == '/login';
-
-        if (!garageState.isAuthenticated) {
-          return loggingIn ? null : '/login';
-        }
-
-        if (loggingIn) {
-          return '/';
-        }
-
-        return null;
-      },
       routes: [
-        GoRoute(
-          path: '/login',
-          pageBuilder: (context, state) => buildPageWithTransition(const LoginScreen()),
-        ),
         ShellRoute(
           navigatorKey: _shellNavigatorKey,
           builder: (context, state, child) => MainLayout(child: child),

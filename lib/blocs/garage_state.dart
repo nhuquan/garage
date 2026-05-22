@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import '../models/vehicle.dart';
-import '../models/maintenance_item.dart';
+
+import '../database/app_database.dart';
+
 
 enum GarageStatus { initial, loading, success, failure, unauthenticated, authenticating }
 

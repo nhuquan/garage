@@ -1,23 +1,10 @@
 {
   "@@locale": "en",
   "appearance": "Appearance",
-  "appTitle": "Garage",
+  "appTitle": "XeCare",
   "home": "Home",
   "history": "History",
   "settings": "Settings",
-  "logout": "Logout",
-  "greeting": "Hello, {username}",
-  "@greeting": {
-    "placeholders": {
-      "username": {
-        "type": "String"
-      }
-    }
-  },
-  "login": "Login",
-  "register": "Register",
-  "username": "Username",
-  "password": "Password",
   "darkTheme": "Dark Theme",
   "language": "Language",
   "vietnamese": "Vietnamese",
@@ -31,8 +18,8 @@
   "save": "Save",
   "delete": "Delete",
   "maintenanceHistory": "Maintenance History",
-  "addRecord": "Add Record",
-  "editRecord": "Edit Record",
+  "addRecord": "Maintenance record",
+  "editRecord": "Maintenance record",
   "title": "Title",
   "date": "Date",
   "cost": "Cost",
@@ -40,18 +27,5 @@
   "notes": "Notes",
   "optional": "(Optional)",
   "noVehicles": "No vehicles found. Add one!",
-  "noMaintenance": "No maintenance records found.",
-  "serviceType": "Service Type",
-  "oil": "Oil Change",
-  "brake": "Brake Service",
-  "coolant": "Coolant Flush",
-  "tire": "Tire Rotation/Change",
-  "filter": "Filter Replacement",
-  "other": "Other",
-  "dangerZone": "Danger Zone",
-  "deleteAccount": "Delete Account",
-  "deleteAccountTitle": "Delete Account?",
-  "deleteAccountWarning": "This action cannot be undone. All your vehicles and maintenance records will be permanently removed.",
-  "enterPassword": "Type in: YES to confirm",
-  "incorrectPassword": "Incorrect password. Please try again."
+  "noMaintenance": "No maintenance records found."
 }

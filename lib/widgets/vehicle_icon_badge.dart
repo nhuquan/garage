@@ -1,5 +1,37 @@
 import 'package:flutter/material.dart';
-import '../models/vehicle.dart';
+
+import '../database/app_database.dart';
+import '../gen/assets.gen.dart';
+
+extension VehicleExtension on Vehicle {
+  AssetGenImage? get brandLogo {
+    final lowerName = name.toLowerCase();
+    if (lowerName.contains('ford')) return Assets.logos.ford;
+    if (lowerName.contains('toyota')) return Assets.logos.toyota;
+    if (lowerName.contains('honda')) return Assets.logos.honda;
+    if (lowerName.contains('suzuki')) return Assets.logos.suzuki;
+    if (lowerName.contains('yamaha')) return Assets.logos.yamaha;
+    if (lowerName.contains('peugeot')) return Assets.logos.peugeot;
+    return null;
+  }
+
+  IconData get vehicleIcon {
+    switch (type.toLowerCase()) {
+      case 'car':
+        return Icons.directions_car_rounded;
+      case 'motorcycle':
+      case 'moto':
+        return Icons.two_wheeler_rounded;
+      case 'bicycle':
+      case 'bike':
+        return Icons.pedal_bike_rounded;
+      case 'truck':
+        return Icons.local_shipping_rounded;
+      default:
+        return Icons.more_horiz_rounded;
+    }
+  }
+}
 
 class VehicleIconBadge extends StatelessWidget {
   final Vehicle vehicle;

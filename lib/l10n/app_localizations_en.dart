@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appearance => 'Appearance';
 
   @override
-  String get appTitle => 'Garage';
+  String get appTitle => 'XeCare';
 
   @override
   String get home => 'Home';
@@ -22,26 +22,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings => 'Settings';
-
-  @override
-  String get logout => 'Logout';
-
-  @override
-  String greeting(String username) {
-    return 'Hello, $username';
-  }
-
-  @override
-  String get login => 'Login';
-
-  @override
-  String get register => 'Register';
-
-  @override
-  String get username => 'Username';
-
-  @override
-  String get password => 'Password';
 
   @override
   String get darkTheme => 'Dark Theme';
@@ -83,10 +63,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maintenanceHistory => 'Maintenance History';
 
   @override
-  String get addRecord => 'Add Record';
+  String get addRecord => 'Maintenance record';
 
   @override
-  String get editRecord => 'Edit Record';
+  String get editRecord => 'Maintenance record';
 
   @override
   String get title => 'Title';
@@ -111,44 +91,4 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noMaintenance => 'No maintenance records found.';
-
-  @override
-  String get serviceType => 'Service Type';
-
-  @override
-  String get oil => 'Oil Change';
-
-  @override
-  String get brake => 'Brake Service';
-
-  @override
-  String get coolant => 'Coolant Flush';
-
-  @override
-  String get tire => 'Tire Rotation/Change';
-
-  @override
-  String get filter => 'Filter Replacement';
-
-  @override
-  String get other => 'Other';
-
-  @override
-  String get dangerZone => 'Danger Zone';
-
-  @override
-  String get deleteAccount => 'Delete Account';
-
-  @override
-  String get deleteAccountTitle => 'Delete Account?';
-
-  @override
-  String get deleteAccountWarning =>
-      'This action cannot be undone. All your vehicles and maintenance records will be permanently removed.';
-
-  @override
-  String get enterPassword => 'Type in: YES to confirm';
-
-  @override
-  String get incorrectPassword => 'Incorrect password. Please try again.';
 }
