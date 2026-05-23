@@ -61,8 +61,11 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
   Future<void> _onLoadGarage(LoadGarage event, Emitter<GarageState> emit) async {
     emit(state.copyWith(status: GarageStatus.loading));
     try {
+      // Restore from Keychain backup if the local DB is empty (e.g. after reinstall).
+      await _storageService.restoreFromBackupIfNeeded();
+
       final vehicles = await _storageService.getVehicles();
-      
+
       final List<MaintenanceItem> allRecords = [];
       for (var v in vehicles) {
         final maintenanceItems = await _storageService.getMaintenanceItemForVehicle(v.id);
@@ -82,42 +85,47 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
   Future<void> _onAddVehicle(AddVehicle event, Emitter<GarageState> emit) async {
     try {
       await _storageService.saveVehicle(event.vehicle);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
-       emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 
   Future<void> _onUpdateVehicle(UpdateVehicle event, Emitter<GarageState> emit) async {
     try {
       await _storageService.saveVehicle(event.vehicle);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
-       emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 
   Future<void> _onDeleteVehicle(DeleteVehicle event, Emitter<GarageState> emit) async {
     try {
       await _storageService.deleteVehicle(event.id);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
-       emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 
   Future<void> _onAddMaintenanceRecord(AddMaintenanceRecord event, Emitter<GarageState> emit) async {
     try {
       await _storageService.saveMaintenanceItem(event.record);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
-       emit(state.copyWith(errorMessage: e.toString()));
+      emit(state.copyWith(errorMessage: e.toString()));
     }
   }
 
   Future<void> _onUpdateMaintenanceRecord(UpdateMaintenanceRecord event, Emitter<GarageState> emit) async {
     try {
       await _storageService.saveMaintenanceItem(event.record);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
@@ -127,6 +135,7 @@ class GarageBloc extends Bloc<GarageEvent, GarageState> {
   Future<void> _onDeleteMaintenanceRecord(DeleteMaintenanceRecord event, Emitter<GarageState> emit) async {
     try {
       await _storageService.deleteMaintenanceItem(event.id);
+      await _storageService.saveBackup();
       add(LoadGarage());
     } catch (e) {
       emit(state.copyWith(errorMessage: e.toString()));
