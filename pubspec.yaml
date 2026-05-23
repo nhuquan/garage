@@ -1,7 +1,7 @@
 name: garage
 description: "XeCare - Chăm xe tại nhà"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 2.0.0
+version: 2.1.0
 
 environment:
   sdk: ^3.10.1
